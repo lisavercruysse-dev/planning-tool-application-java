@@ -1,0 +1,21 @@
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-max-width: Infinity;
+    -fx-font-size: 16;
+}
+
+.sidebar-button:selected {
+    -fx-background-color: #FADEDE;
+}
+
+.sidebar {
+    -fx-background-color: #F9F9F9;
+    -fx-min-width: 200;
+    -fx-border-color: #E4E4E4;
+}
+
+.sidebar-element {
+    -fx-border-color: #E4E4E4;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-style: solid;
+}

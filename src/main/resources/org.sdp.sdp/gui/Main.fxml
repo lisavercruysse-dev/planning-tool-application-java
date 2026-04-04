@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../../styles/styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sdp.sdp.gui.MainController">
+   <children>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <left>
+            <VBox prefHeight="200.0" prefWidth="150.0" spacing="5.0" styleClass="sidebar" BorderPane.alignment="CENTER">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="50.0" prefWidth="100.0" styleClass="sidebar-element">
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../images/delaware.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
+                   <VBox fx:id="sidebarVBox" fillWidth="true">
+                       <children>
+                           <ToggleButton fx:id="btnGebruikers" alignment="CENTER_LEFT" contentDisplay="LEFT" styleClass="sidebar-button" text="Gebruikers">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="navGroup" />
+                           </toggleGroup>
+                           <graphic>
+                              <ImageView fitHeight="150.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../images/users-solid.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></ToggleButton>
+                           <ToggleButton fx:id="btnLogs" alignment="CENTER_LEFT" contentDisplay="LEFT" styleClass="sidebar-button" text="Logs" toggleGroup="$navGroup">
+                           <graphic>
+                              <ImageView fitHeight="150.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../images/file-solid.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></ToggleButton>
+                           <ToggleButton fx:id="btnMeldingen" alignment="CENTER_LEFT" contentDisplay="LEFT" styleClass="sidebar-button" text="Meldingen" toggleGroup="$navGroup">
+                           <graphic>
+                              <ImageView fitHeight="150.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../images/bell-solid.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></ToggleButton>
+                       </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                   </VBox>
+               </children>
+            </VBox>
+         </left>
+         <center>
+            <StackPane fx:id="contentPane" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

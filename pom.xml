@@ -65,6 +65,7 @@
             <artifactId>controlsfx</artifactId>
             <version>11.2.1</version>
         </dependency>
+
     </dependencies>
     <build>
         <plugins>
