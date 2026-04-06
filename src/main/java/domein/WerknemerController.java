@@ -11,7 +11,7 @@ public class WerknemerController {
         });
     }
 
-    public Werknemer addWerknemer(String voornaam, String achternaam, String jobtitel, String wachtwoord){
-        return werknemerManager.addWerknemer(voornaam, achternaam, jobtitel, wachtwoord);
+    public Werknemer addWerknemer(String voornaam, String achternaam, String jobtitel, String wachtwoord, Team team) {
+        return werknemerManager.addWerknemer(voornaam, achternaam, jobtitel, wachtwoord, team);
     }
 }
