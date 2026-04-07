@@ -47,7 +47,7 @@ public class Werknemer {
         this.team = team;
     }
 
-    private void setVoornaam(String voornaam) {
+    public void setVoornaam(String voornaam) {
         if (voornaam != null && voornaam.length() >= 2 && voornaam.matches("^[A-Za-z]+$")) {
             this.voornaam = voornaam;
         }
@@ -61,7 +61,7 @@ public class Werknemer {
         else throw new IllegalArgumentException("Achternaam is niet correct");
     }
 
-    private void setJobTitel(String jobtitel) {
+    public void setJobTitel(String jobtitel) {
         if (jobtitel == null || jobtitel.isBlank()) {
             throw new IllegalArgumentException("JobTitel moet gekozen zijn");
         }

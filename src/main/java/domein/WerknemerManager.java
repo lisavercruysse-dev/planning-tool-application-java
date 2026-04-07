@@ -14,11 +14,41 @@ public class WerknemerManager {
     }
 
     public Werknemer addWerknemer(String voornaam, String achternaam, String jobtitel, String wachtwoord, Team team) {
-        Werknemer w = new Werknemer(voornaam, achternaam, jobtitel, wachtwoord, team);
+        try {
+            Werknemer w = new Werknemer(voornaam, achternaam, jobtitel, wachtwoord, team);
+            werknemerRepo.startTransaction();
+            werknemerRepo.insert(w);
+            werknemerRepo.commitTransaction();
+            return w;
+        } catch (Exception ex) {
+            werknemerRepo.rollbackTransaction();
+            throw ex;
+        }
+
+    }
+
+    public void wijzigWerknemer(Werknemer werknemer, String nieuweNaam, String nieuweJobtitel) {
         werknemerRepo.startTransaction();
-        werknemerRepo.insert(w);
-        werknemerRepo.commitTransaction();
-        return w;
+        try {
+            werknemer.setVoornaam(nieuweNaam);
+            werknemer.setJobTitel(nieuweJobtitel);
+            werknemerRepo.update(werknemer);
+            werknemerRepo.commitTransaction();
+        } catch (Exception ex) {
+            werknemerRepo.rollbackTransaction();
+            throw ex;
+        }
+    }
+
+    public void verwijderWerknemer(Werknemer werknemer) {
+        werknemerRepo.startTransaction();
+        try {
+            werknemerRepo.delete(werknemer);
+            werknemerRepo.commitTransaction();
+        } catch (Exception ex) {
+            werknemerRepo.rollbackTransaction();
+            throw ex;
+        }
     }
 
     public void closePersistency() {
