@@ -14,4 +14,12 @@ public class WerknemerController {
     public Werknemer addWerknemer(String voornaam, String achternaam, String jobtitel, String wachtwoord, Team team) {
         return werknemerManager.addWerknemer(voornaam, achternaam, jobtitel, wachtwoord, team);
     }
+
+    public void wijzigWerknemer(Werknemer werknemer, String nieuweNaam, String nieuweJobTitel) {
+        werknemerManager.wijzigWerknemer(werknemer, nieuweNaam, nieuweJobTitel);
+    }
+
+    public void verwijderWerknemer(Werknemer werknemer) {
+        werknemerManager.verwijderWerknemer(werknemer);
+    }
 }
