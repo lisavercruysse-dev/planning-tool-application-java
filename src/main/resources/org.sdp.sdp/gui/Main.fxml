@@ -67,5 +67,6 @@
             <StackPane fx:id="contentPane" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
          </center>
       </BorderPane>
+       <StackPane fx:id="popupContent" mouseTransparent="true" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
    </children>
 </AnchorPane>

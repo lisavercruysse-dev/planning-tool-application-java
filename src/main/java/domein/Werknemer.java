@@ -27,15 +27,12 @@ public class Werknemer {
 
     private String email;
 
-    @Column(name="password")
+    @Column(name="password_hash")
     private String wachtwoord;
 
     @Setter
     @ManyToOne
-    @JoinTable(name = "team_werknemers",
-        joinColumns = @JoinColumn(name = "werknemerId"),
-        inverseJoinColumns = @JoinColumn(name = "teamId")
-    )
+    @JoinColumn(name = "teamId")
     Team team;
 
     public Werknemer(String voornaam, String achternaam, String jobtitel, String wachtwoord, Team team) {

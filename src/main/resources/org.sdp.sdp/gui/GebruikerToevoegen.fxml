@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sdp.sdp.gui.GebruikerToevoegenController">
+   <children>
+      <VBox alignment="TOP_CENTER" maxHeight="400" maxWidth="400" spacing="20.0" style="-fx-background-color: white;" styleClass="popupContainer" stylesheets="@../../styles/styles.css">
+         <children>
+            <Label styleClass="popupTitel" stylesheets="@../../styles/styles.css" text="Gebruiker Toevoegen" />
+            <VBox prefHeight="200.0" prefWidth="100.0" spacing="15.0">
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                     <children>
+                        <Label text="Voornaam" />
+                        <TextField fx:id="voornaam" promptText="Voornaam" styleClass="inputField" />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                     <children>
+                        <Label text="Achternaam" />
+                        <TextField fx:id="achternaam" promptText="Achternaam" styleClass="inputField" />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                     <children>
+                        <Label text="Wachtwoord" />
+                        <PasswordField fx:id="wachtwoord" promptText="wachtwoord" styleClass="inputField" />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                     <children>
+                        <Label text="Jobtitel" />
+                        <ComboBox fx:id="jobTitelCombo" prefWidth="150.0" styleClass="inputField" />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                     <children>
+                        <Label text="Team" />
+                        <ComboBox fx:id="teamCombo" prefWidth="150.0" styleClass="inputField" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+            <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#btnCloseAction" styleClass="cancelButton" text="Annuleren" />
+                  <Button mnemonicParsing="false" onAction="#btnConfirmAction" styleClass="confirmButton" text="Toevoegen" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+         </padding>
+      </VBox>
+   </children>
+</StackPane>
