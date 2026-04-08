@@ -3,12 +3,19 @@ package domein;
 import repository.GenericDao;
 import repository.GenericDaoJpa;
 
+import java.util.List;
+
 public class WerknemerController {
 
     private final WerknemerManager werknemerManager;
+
     public WerknemerController() {
         this.werknemerManager = new WerknemerManager(new GenericDaoJpa<Werknemer>(Werknemer.class) {
         });
+    }
+
+    public List<Werknemer> getWerknemers() {
+        return werknemerManager.getWerknemerList();
     }
 
     public Werknemer addWerknemer(String voornaam, String achternaam, String jobtitel, String wachtwoord, Team team) {
