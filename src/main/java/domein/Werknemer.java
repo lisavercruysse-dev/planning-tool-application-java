@@ -6,10 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 @Entity
 @Table(name="werknemers")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
+@Getter @Setter
 public class Werknemer {
 
     @Id
@@ -30,12 +33,11 @@ public class Werknemer {
     @Column(name="password_hash")
     private String wachtwoord;
 
-    @Setter
     @ManyToOne
     @JoinColumn(name = "teamId")
     Team team;
 
-    public Werknemer(String voornaam, String achternaam, String jobtitel, String wachtwoord, Team team) {
+    public Werknemer(String voornaam, String achternaam, JobTitel jobtitel, String wachtwoord, Team team) {
         setVoornaam(voornaam);
         setAchternaam(achternaam);
         setJobTitel(jobtitel);
@@ -44,36 +46,29 @@ public class Werknemer {
         this.team = team;
     }
 
-    public void setVoornaam(String voornaam) {
-        if (voornaam != null && voornaam.length() >= 2 && voornaam.matches("^[A-Za-z]+$")) {
-            this.voornaam = voornaam;
-        }
-        else throw new IllegalArgumentException("Voornaam is niet correct");
-    }
+    public static Set<String> validate(String voornaam, String achternaam, String jobtitel, String wachtwoord){
+        Set<String> errors = new LinkedHashSet<>();
 
-    private void setAchternaam(String achternaam) {
-        if(achternaam != null && achternaam.length() >= 2 && achternaam.replaceAll("\\s+", "").length() >= 2 && achternaam.matches("^[A-Za-z ]+$")) {
-            this.achternaam = achternaam;
+        if (voornaam == null || voornaam.length() < 2 || !voornaam.matches("^[A-Za-z]+$")) {
+            errors.add("Voornaam: minimaal 2 letters, geen speciale tekens");
         }
-        else throw new IllegalArgumentException("Achternaam is niet correct");
-    }
-
-    public void setJobTitel(String jobtitel) {
+        if (achternaam == null || achternaam.replaceAll("\\s+", "").length() < 2 || !achternaam.matches("^[A-Za-z ]+$")) {
+            errors.add("Achternaam: minimaal 2 letters, geen speciale tekens");
+        }
+        if (wachtwoord == null || wachtwoord.length() < 8) {
+            errors.add("Wachtwoord moet minstens 8 tekens lang zijn");
+        }
         if (jobtitel == null || jobtitel.isBlank()) {
-            throw new IllegalArgumentException("JobTitel moet gekozen zijn");
+            errors.add("JobTitel moet gekozen zijn");
+        } else {
+            try {
+                JobTitel.valueOf(jobtitel.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                errors.add("Ongeldige JobTitel: " + jobtitel);
+            }
         }
 
-        try {
-            this.jobTitel = JobTitel.valueOf(jobtitel.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Ongeldige jobtitel: " + jobtitel);
-        }
+        return errors;
     }
 
-    private void setWachtwoord(String wachtwoord) {
-        if (wachtwoord.length() >= 8) {
-            this.wachtwoord = wachtwoord;
-        }
-        else throw new IllegalArgumentException("Wachtwoord is niet correct");
-    }
 }

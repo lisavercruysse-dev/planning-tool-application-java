@@ -13,13 +13,12 @@ public class WerknemerManager {
         werknemerRepo = werknemerDao;
     }
 
-    public Werknemer addWerknemer(String voornaam, String achternaam, String jobtitel, String wachtwoord, Team team) {
-        Werknemer w = new Werknemer(voornaam, achternaam, jobtitel, wachtwoord, team);
+    public void addWerknemer(String voornaam, String achternaam, String jobtitel, String wachtwoord, Team team) {
+        Werknemer w = new Werknemer(voornaam, achternaam, JobTitel.valueOf(jobtitel.toUpperCase()), wachtwoord, team);
         werknemerRepo.startTransaction();
         try {
             werknemerRepo.insert(w);
             werknemerRepo.commitTransaction();
-            return w;
         } catch (Exception ex) {
             werknemerRepo.rollbackTransaction();
             throw ex;
@@ -31,7 +30,7 @@ public class WerknemerManager {
         werknemerRepo.startTransaction();
         try {
             werknemer.setVoornaam(nieuweNaam);
-            werknemer.setJobTitel(nieuweJobtitel);
+            werknemer.setJobTitel(JobTitel.valueOf(nieuweJobtitel.toUpperCase()));
             werknemerRepo.update(werknemer);
             werknemerRepo.commitTransaction();
         } catch (Exception ex) {
