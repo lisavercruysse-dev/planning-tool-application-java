@@ -2,10 +2,12 @@ package org.sdp.sdp.gui;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
@@ -24,6 +26,9 @@ public class MainController {
 
     @FXML
     public ToggleButton btnMeldingen;
+
+    @FXML
+    public StackPane popupContent;
 
     @FXML
     private ToggleGroup navGroup;
@@ -54,6 +59,12 @@ public class MainController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Node newContent = loader.load();
+
+            Object controller = loader.getController();
+            if (controller instanceof CanPopup p) {
+                p.setMainController(this);
+            }
+
             contentPane.getChildren().add(newContent);
         } catch (IOException e) {
             e.printStackTrace();
@@ -64,6 +75,27 @@ public class MainController {
         if (defaultBtn != null) {
             defaultBtn.setSelected(true);
         }
+    }
+
+    public void showPopup(Node popup) {
+        popupContent.setMouseTransparent(false);
+
+        Pane background = new Pane();
+        background.setStyle("-fx-background-color: rgba(0,0,0,0.5);");
+        background.prefWidthProperty().bind(popupContent.widthProperty());
+        background.prefHeightProperty().bind(popupContent.heightProperty());
+
+        StackPane wrapper = new StackPane(background, popup);
+        StackPane.setAlignment(popup, Pos.CENTER);
+
+        background.setOnMouseClicked(e -> closePopup());
+
+        popupContent.getChildren().add(wrapper);
+    }
+
+    public void closePopup() {
+        popupContent.getChildren().clear();
+        popupContent.setMouseTransparent(true);
     }
 
 }

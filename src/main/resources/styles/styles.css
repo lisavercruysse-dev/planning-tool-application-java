@@ -19,3 +19,39 @@
     -fx-border-width: 0 0 1 0;
     -fx-border-style: solid;
 }
+
+.popupTitel {
+    -fx-font-size: 20;
+    -fx-font-weight: bold;
+}
+
+.popupContainer {
+    -fx-border-radius: 15;
+    -fx-background-radius: 15;
+}
+
+.inputField {
+    -fx-background-color: #F3F3F5;
+    -fx-max-width: 600;
+}
+
+.confirmButton {
+    -fx-background-color: #396BDA;
+    -fx-text-fill: white;
+    -fx-padding: 5 10 5 10;
+}
+
+.cancelButton {
+    -fx-background-color: #E3E3E3;
+    -fx-padding: 5 10 5 10;
+}
+
+.confirmButton:hover {
+    -fx-background-color: #5A82E0;
+    -fx-cursor: hand;
+}
+
+.cancelButton:hover {
+    -fx-background-color: #D0D0D0;
+    -fx-cursor: hand;
+}

@@ -18,6 +18,7 @@ public class Team {
     private int id;
 
     @ManyToOne
+    @JoinColumn(name = "verantwoordelijkeId")
     private Werknemer verantwoordelijke;
 
     //site
