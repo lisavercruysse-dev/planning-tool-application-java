@@ -19,7 +19,7 @@ public class ObservableWerknemer {
         this.werknemer = werknemer;
         this.voornaam = new SimpleStringProperty(werknemer.getVoornaam());
         this.achternaam = new SimpleStringProperty(werknemer.getAchternaam());
-        this.jobTitel = new SimpleStringProperty(werknemer.getJobTitel());
+        this.jobTitel = new SimpleStringProperty(werknemer.getJobTitel().name());
         this.email = new SimpleStringProperty(werknemer.getEmail());
 
         // wijzigingen in GUI doorgeven aan domein

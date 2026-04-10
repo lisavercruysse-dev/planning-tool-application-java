@@ -22,9 +22,9 @@ public class Werknemer {
     @Column(name="lastName")
     private String achternaam;
 
-    //@Enumerated(EnumType.STRING)
-    //private JobTitel jobTitel;
-    private String jobTitel;
+    @Enumerated(EnumType.STRING)
+    private JobTitel jobTitel;
+    //private String jobTitel;
 
     private String email;
 

@@ -20,7 +20,7 @@ public class ObservableWerknemersTable {
         this.controller = controller;
         this.werknemerObservableList = FXCollections.observableArrayList();
 
-        List<Werknemer> werknemers = controller.getWerknemers();
+        List<Werknemer> werknemers = this.controller.getWerknemers();
         if (werknemers != null) {
             werknemers.forEach(p -> werknemerObservableList.add(new ObservableWerknemer(p)));
         }
