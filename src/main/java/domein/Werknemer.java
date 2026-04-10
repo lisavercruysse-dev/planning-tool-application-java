@@ -24,6 +24,7 @@ public class Werknemer {
 
     @Enumerated(EnumType.STRING)
     private JobTitel jobTitel;
+    //private String jobTitel;
 
     private String email;
 
@@ -51,7 +52,7 @@ public class Werknemer {
         else throw new IllegalArgumentException("Voornaam is niet correct");
     }
 
-    private void setAchternaam(String achternaam) {
+    public void setAchternaam(String achternaam) {
         if(achternaam != null && achternaam.length() >= 2 && achternaam.replaceAll("\\s+", "").length() >= 2 && achternaam.matches("^[A-Za-z ]+$")) {
             this.achternaam = achternaam;
         }
@@ -64,7 +65,7 @@ public class Werknemer {
         }
 
         try {
-            this.jobTitel = JobTitel.valueOf(jobtitel.toUpperCase());
+            //this.jobTitel = JobTitel.valueOf(jobtitel.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Ongeldige jobtitel: " + jobtitel);
         }

@@ -2,6 +2,7 @@ package domein;
 
 import repository.GenericDao;
 
+import java.util.Collections;
 import java.util.List;
 
 public class WerknemerManager {
@@ -11,6 +12,12 @@ public class WerknemerManager {
 
     public WerknemerManager(GenericDao<Werknemer> werknemerDao) {
         werknemerRepo = werknemerDao;
+    }
+
+    public List<Werknemer> getWerknemerList() {
+        List<Werknemer> result = werknemerRepo.findAll();
+        System.out.print("lijst werknemers: " + result);
+        return result != null ? result : Collections.emptyList();
     }
 
     public Werknemer addWerknemer(String voornaam, String achternaam, String jobtitel, String wachtwoord, Team team) {

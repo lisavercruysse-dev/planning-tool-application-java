@@ -1,27 +1,47 @@
 package org.sdp.sdp.gui;
 
-import domein.Werknemer;
 import domein.WerknemerController;
 import domein.WerknemerManager;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.VBox;
 import lombok.Setter;
 
 import javax.imageio.IIOException;
 import java.io.IOException;
 
-public class GebruikersController implements CanPopup {
+public class GebruikersController extends VBox implements CanPopup {
     private MainController mainController;
 
     @FXML
-    private TableView<Werknemer> tblGebruikers;
+    private TableView<ObservableWerknemer> tblWerknemers;
 
     @FXML
-    private TextField txtNaam;
+    private TableColumn<ObservableWerknemer, String> firstNameCol;
+
+    @FXML
+    private TableColumn<ObservableWerknemer, String> lastNameCol;
+
+    @FXML
+    private TableColumn<ObservableWerknemer, String> jobTitelCol;
+
+    @FXML
+    private TableColumn<ObservableWerknemer, String> emailCol;
+
+    private final ObservableWerknemersTable observableWerknemersTable;
+
+    @FXML
+    private TextField addFirstName;
+
+    @FXML
+    private TextField addLastName;
 
     @FXML
     private TextField txtRol;
@@ -29,9 +49,63 @@ public class GebruikersController implements CanPopup {
     @Setter
     private WerknemerController controller;
 
+    public GebruikersController(WerknemerController controller){
+
+        // wrapper maken
+        this.observableWerknemersTable = new ObservableWerknemersTable(controller);
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org.sdp.sdp/gui/WerknemersFrame.fxml"));
+        loader.setRoot(this);
+        loader.setController(this);
+
+        try {
+            loader.load();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        initializeTable();
+    }
+
+    private void initializeTable() {
+
+        firstNameCol.setCellValueFactory(cellData -> cellData.getValue().firstNameProperty());
+        firstNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        lastNameCol.setCellValueFactory(cellData -> cellData.getValue().lastNameProperty());
+        jobTitelCol.setCellValueFactory(cellData -> cellData.getValue().jobTitelProperty());
+        emailCol.setCellValueFactory(cellData -> cellData.getValue().emailProperty());
+
+        // SortedList in GUI
+        SortedList<ObservableWerknemer> sortedList =
+                new SortedList<>(observableWerknemersTable.getFilteredPersonList());
+
+        // Binding voor kolomsortering
+        sortedList.comparatorProperty().bind(tblWerknemers.comparatorProperty());
+
+        tblWerknemers.setItems(sortedList);
+
+        // Default sortering instellen
+        firstNameCol.setSortType(TableColumn.SortType.ASCENDING);
+        tblWerknemers.getSortOrder().add(firstNameCol);
+
+        tblWerknemers.getSelectionModel().selectedItemProperty().
+                addListener((observableValue, oldPerson, newPerson) -> {
+                    //Controleer of er een persoon is geselecteerd
+                    if (newPerson != null) {
+                        int index = tblWerknemers.
+                                getSelectionModel().getSelectedIndex();
+                        System.out.printf("%d %s %s%n", index,
+                                newPerson.getFirstName(),
+                                newPerson.getLastName());
+                    }
+                });
+    }
+
+/*
     @FXML
     private void btnWijzigAction() {
-        var geselecteerd = tblGebruikers.getSelectionModel().getSelectedItem();
+        var geselecteerd = tblWerknemers.getSelectionModel().getSelectedItem();
         if (geselecteerd != null) {
             controller.wijzigWerknemer(geselecteerd, txtNaam.getText(), txtRol.getText());
         }
@@ -39,13 +113,13 @@ public class GebruikersController implements CanPopup {
 
     @FXML
     private void btnVerwijderAction() {
-        var geselecteerd = tblGebruikers.getSelectionModel().getSelectedItem();
+        var geselecteerd = tblWerknemers.getSelectionModel().getSelectedItem();
         if (geselecteerd != null) {
             controller.verwijderWerknemer(geselecteerd);
             txtNaam.clear();
             txtRol.clear();
         }
-    }
+    } */
 
     public void btnToevoegenAction(ActionEvent actionEvent) {
         try {

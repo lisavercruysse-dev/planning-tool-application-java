@@ -18,7 +18,7 @@ public class Team {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "verantwoordelijkeId")
+    @JoinColumn(name = "verantwoordelijkeId", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Werknemer verantwoordelijke;
 
     //site
