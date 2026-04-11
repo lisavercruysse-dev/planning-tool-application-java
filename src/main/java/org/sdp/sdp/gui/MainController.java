@@ -1,10 +1,10 @@
 package org.sdp.sdp.gui;
 
+import domein.WerknemerController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
@@ -13,10 +13,11 @@ import javafx.scene.layout.StackPane;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class MainController {
 
-    private final Map<ToggleButton, String> navButtons = new HashMap<>();
+    private final Map<ToggleButton, Supplier<Node>> navButtons = new HashMap<>();
 
     @FXML
     public ToggleButton btnGebruikers;
@@ -38,15 +39,20 @@ public class MainController {
 
     @FXML
     private void initialize() {
-        navButtons.put(btnGebruikers, "/org.sdp.sdp/gui/Gebruikers.fxml");
-        navButtons.put(btnLogs, "/org.sdp.sdp/gui/Logs.fxml");
-        navButtons.put(btnMeldingen, "/org.sdp.sdp/gui/meldingen.fxml");
+        WerknemerController werknemerController = new WerknemerController();
+        navButtons.put(btnGebruikers, () -> {
+            GebruikersController c = new GebruikersController(werknemerController);
+            c.setMainController(this);
+            return c;
+        });
+        navButtons.put(btnLogs, () -> loadFxml("/org.sdp.sdp/gui/Logs.fxml"));
+        navButtons.put(btnMeldingen, () -> loadFxml("/org.sdp.sdp/gui/meldingen.fxml"));
 
         navGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
             if (newToggle != null) {
-                Node selected = (Node) newToggle;
-                String path = navButtons.get(selected);
-                if (path != null) {setContent(path);
+                Supplier<Node> factory = navButtons.get((ToggleButton) newToggle);
+                if (factory != null) {
+                    setContent(factory);
                 }
             }
         });
@@ -54,20 +60,27 @@ public class MainController {
         setDefaultBtn(btnGebruikers);
     }
 
-    private void setContent(String fxmlPath) {
+    private void setContent(Supplier<Node> factory) {
         contentPane.getChildren().clear();
+        Node newContent = factory.get();
+        contentPane.getChildren().add(newContent);
+    }
+
+    // Hulpmethode voor gewone FXML's (zonder fx:root patroon)
+    private Node loadFxml(String path) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Node newContent = loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
+            Node node = loader.load();
 
             Object controller = loader.getController();
             if (controller instanceof CanPopup p) {
                 p.setMainController(this);
             }
 
-            contentPane.getChildren().add(newContent);
+            return node;
         } catch (IOException e) {
-            e.printStackTrace();
+
+            throw new RuntimeException(e);
         }
     }
 

@@ -27,6 +27,7 @@ public class Werknemer {
 
     @Enumerated(EnumType.STRING)
     private JobTitel jobTitel;
+    //private String jobTitel;
 
     private String email;
 
@@ -49,7 +50,7 @@ public class Werknemer {
     public static Set<String> validate(String voornaam, String achternaam, String jobtitel, String wachtwoord){
         Set<String> errors = new LinkedHashSet<>();
 
-        if (voornaam == null || voornaam.length() < 2 || !voornaam.matches("^[A-Za-z]+$")) {
+      if (voornaam == null || voornaam.length() < 2 || !voornaam.matches("^[A-Za-z]+$")) {
             errors.add("Voornaam: minimaal 2 letters, geen speciale tekens");
         }
         if (achternaam == null || achternaam.replaceAll("\\s+", "").length() < 2 || !achternaam.matches("^[A-Za-z ]+$")) {
@@ -58,6 +59,7 @@ public class Werknemer {
         if (wachtwoord == null || wachtwoord.length() < 8) {
             errors.add("Wachtwoord moet minstens 8 tekens lang zijn");
         }
+          
         if (jobtitel == null || jobtitel.isBlank()) {
             errors.add("JobTitel moet gekozen zijn");
         } else {
@@ -67,8 +69,8 @@ public class Werknemer {
                 errors.add("Ongeldige JobTitel: " + jobtitel);
             }
         }
-
         return errors;
+
     }
 
 }
