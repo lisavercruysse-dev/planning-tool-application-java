@@ -14,12 +14,12 @@ public class WerknemerController {
         });
     }
 
+    public void addWerknemer(String voornaam, String achternaam, String jobtitel, String wachtwoord, Team team) {
+        werknemerManager.addWerknemer(voornaam, achternaam, jobtitel, wachtwoord, team);
+     }
+  
     public List<Werknemer> getWerknemers() {
         return werknemerManager.getWerknemerList();
-    }
-
-    public Werknemer addWerknemer(String voornaam, String achternaam, String jobtitel, String wachtwoord, Team team) {
-        return werknemerManager.addWerknemer(voornaam, achternaam, jobtitel, wachtwoord, team);
     }
 
     public void wijzigWerknemer(Werknemer werknemer, String nieuweNaam, String nieuweJobTitel) {
