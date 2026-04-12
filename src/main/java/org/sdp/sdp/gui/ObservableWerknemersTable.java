@@ -26,4 +26,14 @@ public class ObservableWerknemersTable {
         }
         this.filteredPersonList = new FilteredList<>(werknemerObservableList, p -> true);
     }
+
+    public void changeFilter(String filterValue) {
+        filteredPersonList.setPredicate(p -> {
+            if (filterValue == null || filterValue.isBlank()) return true;
+            String lower = filterValue.toLowerCase();
+            return p.firstNameProperty().get().toLowerCase().contains(lower) ||
+                    p.lastNameProperty().get().toLowerCase().contains(lower) ||
+                    p.jobTitelProperty().get().toLowerCase().contains(lower);
+        });
+    }
 }

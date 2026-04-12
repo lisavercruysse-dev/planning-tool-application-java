@@ -21,6 +21,9 @@ public class GebruikersController extends VBox implements CanPopup {
     private MainController mainController;
 
     @FXML
+    private TextField txtFilter;
+
+    @FXML
     private TableView<ObservableWerknemer> tblWerknemers;
 
     @FXML
@@ -100,6 +103,11 @@ public class GebruikersController extends VBox implements CanPopup {
                                 newPerson.getLastName());
                     }
                 });
+    }
+
+    @FXML
+    private void filter() {
+        observableWerknemersTable.changeFilter(txtFilter.getText());
     }
 
 /*
