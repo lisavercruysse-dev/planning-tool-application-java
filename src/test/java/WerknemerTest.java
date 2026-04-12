@@ -1,7 +1,5 @@
-import domein.JobTitel;
-import domein.Team;
-import domein.Werknemer;
-import domein.WerknemerManager;
+import domein.*;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -15,6 +13,8 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,7 +27,8 @@ public class WerknemerTest {
     private WerknemerManager werknemerManager;
 
     private static final Werknemer VERANTWOORDELIJKE = new Werknemer("Bart", "De Smedt", JobTitel.VERANTWOORDELIJKE, "12345678", null);
-    private static final Team TEAM = new Team(VERANTWOORDELIJKE);
+    private static final Site SITE = new Site("Site noord", "Gent", 100, "actief", "gezond");
+    private static final Team TEAM = new Team(VERANTWOORDELIJKE, "Team A", SITE);
 
     private static Stream<Arguments> correcteWaardenToevoegenWerknemer() {
         return Stream.of(
@@ -82,5 +83,12 @@ public class WerknemerTest {
         assertThrows(IllegalArgumentException.class, () -> {
             werknemerManager.addWerknemer(voornaam, achternaam, jobtitel, wachtwoord, team);
         });
+    }
+
+    @Test
+    public void addTeamRollbackBijFoutTest() {
+        doThrow(new RuntimeException()).when(werknemerRepo).insert(any());
+        assertThrows(RuntimeException.class, () -> werknemerManager.addWerknemer("Thomas", "De Bakker", "werknemer", "12345678", TEAM));
+        verify(werknemerRepo).rollbackTransaction();
     }
 }
