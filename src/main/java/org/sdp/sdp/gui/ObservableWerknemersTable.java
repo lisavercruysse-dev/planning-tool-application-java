@@ -32,7 +32,8 @@ public class ObservableWerknemersTable {
             if (filterValue == null || filterValue.isBlank()) return true;
             String lower = filterValue.toLowerCase();
             return p.firstNameProperty().get().toLowerCase().contains(lower) ||
-                    p.lastNameProperty().get().toLowerCase().contains(lower);
+                    p.lastNameProperty().get().toLowerCase().contains(lower) ||
+                    p.jobTitelProperty().get().toLowerCase().contains(lower);
         });
     }
 }
