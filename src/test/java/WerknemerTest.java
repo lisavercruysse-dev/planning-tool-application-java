@@ -1,7 +1,4 @@
-import domein.JobTitel;
-import domein.Team;
-import domein.Werknemer;
-import domein.WerknemerManager;
+import domein.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -30,7 +27,8 @@ public class WerknemerTest {
     private WerknemerManager werknemerManager;
 
     private static final Werknemer VERANTWOORDELIJKE = new Werknemer("Bart", "De Smedt", JobTitel.VERANTWOORDELIJKE, "12345678", null);
-    private static final Team TEAM = new Team(VERANTWOORDELIJKE);
+    private static final Site SITE = new Site("Site noord", "Gent", 100, "actief", "gezond");
+    private static final Team TEAM = new Team(VERANTWOORDELIJKE, "Team A", SITE);
 
     private static Stream<Arguments> correcteWaardenToevoegenWerknemer() {
         return Stream.of(

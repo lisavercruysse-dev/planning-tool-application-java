@@ -10,7 +10,7 @@ public class TeamController {
         this.teamManager = new TeamManager(new GenericDaoJpa<Team>(Team.class));
     }
 
-    public Team addTeam(Werknemer verantwoordelijke) {
-        return teamManager.addTeam(verantwoordelijke);
+    public Team addTeam(Werknemer verantwoordelijke, String naam, Site site) {
+        return teamManager.addTeam(verantwoordelijke, naam, site);
     }
 }
