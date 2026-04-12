@@ -2,6 +2,7 @@ import domein.JobTitel;
 import domein.Team;
 import domein.Werknemer;
 import domein.WerknemerManager;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -15,6 +16,8 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -82,5 +85,12 @@ public class WerknemerTest {
         assertThrows(IllegalArgumentException.class, () -> {
             werknemerManager.addWerknemer(voornaam, achternaam, jobtitel, wachtwoord, team);
         });
+    }
+
+    @Test
+    public void addTeamRollbackBijFoutTest() {
+        doThrow(new RuntimeException()).when(werknemerRepo).insert(any());
+        assertThrows(RuntimeException.class, () -> werknemerManager.addWerknemer("Thomas", "De Bakker", "werknemer", "12345678", TEAM));
+        verify(werknemerRepo).rollbackTransaction();
     }
 }

@@ -27,6 +27,9 @@ public class Team {
     private List<Werknemer> werknemers;
 
     public Team(Werknemer verantwoordelijke) {
+        if (verantwoordelijke == null) {
+            throw new IllegalArgumentException("Verantwoordelijke moet ingevuld zijn");
+        }
         this.verantwoordelijke = verantwoordelijke;
         verantwoordelijke.getTeams().add(this);
     }
