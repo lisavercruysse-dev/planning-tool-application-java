@@ -23,11 +23,11 @@ public class Team {
 
     //site
 
-    @OneToMany(mappedBy = "team")
+    @ManyToMany(mappedBy = "teams")
     private List<Werknemer> werknemers;
 
     public Team(Werknemer verantwoordelijke) {
         this.verantwoordelijke = verantwoordelijke;
-        verantwoordelijke.setTeam(this);
+        verantwoordelijke.getTeams().add(this);
     }
 }
