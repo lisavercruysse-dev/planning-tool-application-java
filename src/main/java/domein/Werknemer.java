@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -34,9 +36,8 @@ public class Werknemer {
     @Column(name="password_hash")
     private String wachtwoord;
 
-    @ManyToOne
-    @JoinColumn(name = "teamId")
-    Team team;
+    @ManyToMany()
+    private List<Team> teams = new ArrayList<>();
 
     public Werknemer(String voornaam, String achternaam, JobTitel jobtitel, String wachtwoord, Team team) {
         setVoornaam(voornaam);
@@ -44,7 +45,9 @@ public class Werknemer {
         setJobTitel(jobtitel);
         setWachtwoord(wachtwoord);
         this.email = String.format("%s.%s@example.com", voornaam, achternaam.replaceAll("\\s+", ""));
-        this.team = team;
+        if (team != null) {
+            teams.add(team);
+        }
     }
 
     public static Set<String> validate(String voornaam, String achternaam, String jobtitel, String wachtwoord){

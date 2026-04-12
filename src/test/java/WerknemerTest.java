@@ -1,3 +1,4 @@
+import domein.JobTitel;
 import domein.Team;
 import domein.Werknemer;
 import domein.WerknemerManager;
@@ -25,7 +26,7 @@ public class WerknemerTest {
     @InjectMocks
     private WerknemerManager werknemerManager;
 
-    private static final Werknemer VERANTWOORDELIJKE = new Werknemer("Bart", "De Smedt", "verantwoordelijke", "12345678", null);
+    private static final Werknemer VERANTWOORDELIJKE = new Werknemer("Bart", "De Smedt", JobTitel.VERANTWOORDELIJKE, "12345678", null);
     private static final Team TEAM = new Team(VERANTWOORDELIJKE);
 
     private static Stream<Arguments> correcteWaardenToevoegenWerknemer() {

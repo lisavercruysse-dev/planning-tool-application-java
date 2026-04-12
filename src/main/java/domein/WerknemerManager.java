@@ -4,6 +4,7 @@ import repository.GenericDao;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class WerknemerManager {
 
@@ -14,7 +15,12 @@ public class WerknemerManager {
         werknemerRepo = werknemerDao;
     }
 
-    public void addWerknemer(String voornaam, String achternaam, String jobtitel, String wachtwoord, Team team) {
+    public Werknemer addWerknemer(String voornaam, String achternaam, String jobtitel, String wachtwoord, Team team) {
+        Set<String> errors = Werknemer.validate(voornaam, achternaam, jobtitel, wachtwoord);
+        if (!errors.isEmpty()) {
+            throw new IllegalArgumentException(String.join("\n", errors));
+        }
+
         Werknemer w = new Werknemer(voornaam, achternaam, JobTitel.valueOf(jobtitel.toUpperCase()), wachtwoord, team);
 
         werknemerRepo.startTransaction();
@@ -25,7 +31,7 @@ public class WerknemerManager {
             werknemerRepo.rollbackTransaction();
             throw ex;
         }
-
+        return w;
     }
   
       public List<Werknemer> getWerknemerList() {
