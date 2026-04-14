@@ -37,6 +37,11 @@ public class Werknemer {
     private String wachtwoord;
 
     @ManyToMany()
+    @JoinTable(
+            name = "team_werknemers",
+            joinColumns = @JoinColumn(name = "werknemerId", referencedColumnName = "id", columnDefinition = "INT UNSIGNED"),
+            inverseJoinColumns = @JoinColumn(name = "teamId", referencedColumnName = "ID")
+    )
     private List<Team> teams = new ArrayList<>();
 
     public Werknemer(String voornaam, String achternaam, JobTitel jobtitel, String wachtwoord, Team team) {

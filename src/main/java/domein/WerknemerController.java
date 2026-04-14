@@ -1,5 +1,6 @@
 package domein;
 
+import repository.GebruikerDaoJpa;
 import repository.GenericDao;
 import repository.GenericDaoJpa;
 
@@ -10,8 +11,7 @@ public class WerknemerController {
     private final WerknemerManager werknemerManager;
 
     public WerknemerController() {
-        this.werknemerManager = new WerknemerManager(new GenericDaoJpa<Werknemer>(Werknemer.class) {
-        });
+        this.werknemerManager = new WerknemerManager(new GebruikerDaoJpa());
     }
 
     public Werknemer addWerknemer(String voornaam, String achternaam, String jobtitel, String wachtwoord, Team team) {
@@ -28,5 +28,9 @@ public class WerknemerController {
 
     public void verwijderWerknemer(Werknemer werknemer) {
         werknemerManager.verwijderWerknemer(werknemer);
+    }
+
+    public List<Werknemer> getVerantwoordelijken() {
+        return werknemerManager.getVerantwoordelijken();
     }
 }
