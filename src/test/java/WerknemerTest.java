@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import repository.GebruikerDao;
 import repository.GenericDao;
 
 import java.util.stream.Stream;
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.verify;
 public class WerknemerTest {
 
     @Mock
-    private GenericDao<Werknemer> werknemerRepo;
+    private GebruikerDao werknemerRepo;
 
     @InjectMocks
     private WerknemerManager werknemerManager;
