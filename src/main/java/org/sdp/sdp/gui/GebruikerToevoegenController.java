@@ -15,7 +15,7 @@ import javafx.scene.layout.VBox;
 import java.util.Map;
 import java.util.Set;
 
-public class GebruikerToevoegenController implements CanPopup {
+public class GebruikerToevoegenController {
 
     @FXML
     public TextField voornaam;
@@ -42,12 +42,12 @@ public class GebruikerToevoegenController implements CanPopup {
     public Label wachtwoordError;
 
 
-    private MainController mainController;
-    private final WerknemerController werknemerController = new WerknemerController();
+    private final MainController mainController;
+    private final ObservableWerknemersTable werknemersTable;
 
-    @Override
-    public void setMainController(MainController mainController) {
+    public GebruikerToevoegenController(MainController mainController, ObservableWerknemersTable werknemersTable) {
         this.mainController = mainController;
+        this.werknemersTable = werknemersTable;
     }
 
     @FXML
@@ -96,7 +96,7 @@ public class GebruikerToevoegenController implements CanPopup {
 
         if (!errors.isEmpty()) return;
 
-        werknemerController.addWerknemer(voornaam, achternaam, jobtitel, wachtwoord, team);
+        werknemersTable.addWerknemer(voornaam, achternaam, jobtitel, wachtwoord, team);
         mainController.closePopup();
     }
 }

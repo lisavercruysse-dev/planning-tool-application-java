@@ -1,5 +1,6 @@
 package domein;
 
+import repository.GebruikerDao;
 import repository.GenericDao;
 
 import java.util.Collections;
@@ -8,10 +9,10 @@ import java.util.Set;
 
 public class WerknemerManager {
 
-    private GenericDao<Werknemer> werknemerRepo;
+    private GebruikerDao werknemerRepo;
     private List<Werknemer> werknemerList;
 
-    public WerknemerManager(GenericDao<Werknemer> werknemerDao) {
+    public WerknemerManager(GebruikerDao werknemerDao) {
         werknemerRepo = werknemerDao;
     }
 
@@ -62,6 +63,10 @@ public class WerknemerManager {
             werknemerRepo.rollbackTransaction();
             throw ex;
         }
+    }
+
+    public List<Werknemer> getVerantwoordelijken() {
+        return werknemerRepo.getVerantwoordelijken();
     }
 
     public void closePersistency() {

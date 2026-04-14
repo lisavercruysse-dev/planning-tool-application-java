@@ -1,5 +1,6 @@
 package org.sdp.sdp.gui;
 
+import domein.Team;
 import domein.Werknemer;
 import domein.WerknemerController;
 import javafx.collections.FXCollections;
@@ -35,5 +36,12 @@ public class ObservableWerknemersTable {
                     p.lastNameProperty().get().toLowerCase().contains(lower) ||
                     p.jobTitelProperty().get().toLowerCase().contains(lower);
         });
+    }
+
+    public ObservableWerknemer addWerknemer(String voornaam, String achternaam, String jobTitel, String wachtwoord, Team team) {
+        Werknemer w = controller.addWerknemer(voornaam, achternaam, jobTitel, wachtwoord, team);
+        ObservableWerknemer ow = new ObservableWerknemer(w);
+        werknemerObservableList.add(ow);
+        return ow;
     }
 }

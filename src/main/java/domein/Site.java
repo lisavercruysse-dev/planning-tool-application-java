@@ -2,6 +2,7 @@ package domein;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -9,20 +10,26 @@ import java.util.List;
 @Entity
 @Table(name="sites")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Site {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name="locatie")
     private String locatie;
 
+    @Column(name="capaciteit")
     private int capaciteit;
 
+    @Column(name="operationeleStatus")
     private String operationeleStatus;
 
+    @Column(name = "productieStatus")
     private String productieStatus;
 
     @OneToMany(mappedBy = "site")

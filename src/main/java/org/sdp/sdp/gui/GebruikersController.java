@@ -17,8 +17,8 @@ import lombok.Setter;
 import javax.imageio.IIOException;
 import java.io.IOException;
 
-public class GebruikersController extends VBox implements CanPopup {
-    private MainController mainController;
+public class GebruikersController extends VBox {
+    private final MainController mainController;
 
     @FXML
     private TextField txtFilter;
@@ -52,8 +52,9 @@ public class GebruikersController extends VBox implements CanPopup {
     @Setter
     private WerknemerController controller;
 
-    public GebruikersController(WerknemerController controller){
+    public GebruikersController(MainController mainController, WerknemerController controller){
 
+        this.mainController = mainController;
         // wrapper maken
         this.observableWerknemersTable = new ObservableWerknemersTable(controller);
 
@@ -132,19 +133,15 @@ public class GebruikersController extends VBox implements CanPopup {
     public void btnToevoegenAction(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org.sdp.sdp/gui/GebruikerToevoegen.fxml"));
+            GebruikerToevoegenController controller = new GebruikerToevoegenController(mainController, observableWerknemersTable);
+
+            loader.setController(controller);
+
             Node popup = loader.load();
-
-            GebruikerToevoegenController controller = loader.getController();
-            controller.setMainController(mainController);
-
             mainController.showPopup(popup);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
-    @Override
-    public void setMainController(MainController mainController) {
-        this.mainController = mainController;
-    }
 }

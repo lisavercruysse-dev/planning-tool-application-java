@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.sdp.sdp.gui.GebruikerToevoegenController">
+<StackPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox alignment="TOP_CENTER" maxHeight="400" maxWidth="400" spacing="20.0" style="-fx-background-color: white;" styleClass="popupContainer" stylesheets="@../../styles/styles.css">
          <children>
