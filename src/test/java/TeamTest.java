@@ -1,4 +1,5 @@
 import domein.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -6,9 +7,13 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import repository.GenericDao;
+import repository.TeamDao;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,7 +25,7 @@ import static org.mockito.Mockito.verify;
 public class TeamTest {
 
     @Mock
-    private GenericDao<Team> teamRepository;
+    private TeamDao teamRepository;
 
     @InjectMocks
     private TeamManager teamManager;
@@ -30,25 +35,33 @@ public class TeamTest {
 
     private static Stream<Arguments> correcteWaardenToevoegenTeam() {
         return Stream.of(
-                Arguments.of(VERANTWOORDELIJKE, "Site A", SITE),
+                Arguments.of(VERANTWOORDELIJKE, "Team A", SITE),
                 Arguments.of(VERANTWOORDELIJKE, "B1", SITE)
         );
     }
 
     private static Stream<Arguments> fouteWaardenToevoegenTeam() {
         return Stream.of(
-                Arguments.of(null, "Site A", SITE),
-                Arguments.of(null, "Site A", null),
-                Arguments.of(VERANTWOORDELIJKE, "Site A", null),
+                Arguments.of(null, "Team A", SITE),
+                Arguments.of(null, "Team A", null),
+                Arguments.of(VERANTWOORDELIJKE, "Team A", null),
                 Arguments.of(VERANTWOORDELIJKE, "", SITE),
                 Arguments.of(VERANTWOORDELIJKE, "       ", SITE),
                 Arguments.of(VERANTWOORDELIJKE, "a", SITE)
         );
     }
 
+    private static Stream<Arguments> bestaandTeamWaarden() {
+        return Stream.of(
+                Arguments.of(VERANTWOORDELIJKE, "Team A", SITE),
+                Arguments.of(VERANTWOORDELIJKE, "team a", SITE)
+        );
+    }
+
     @ParameterizedTest
     @MethodSource("correcteWaardenToevoegenTeam")
     public void addTeamTest(Werknemer verantwoordelijke, String naam, Site site) {
+        Mockito.when(teamRepository.findAll()).thenReturn(Collections.emptyList());
         Team team = teamManager.addTeam(verantwoordelijke, naam, site);
 
         verify(teamRepository).startTransaction();
@@ -68,8 +81,20 @@ public class TeamTest {
         });
     }
 
+    @ParameterizedTest
+    @MethodSource("bestaandTeamWaarden")
+    public void addTeamBestaatAl(Werknemer verantwoordelijke, String naam, Site site) {
+        Team bestaandTeam = new Team(VERANTWOORDELIJKE, "Team A", site);
+        Mockito.when(teamRepository.findAll()).thenReturn(List.of(bestaandTeam));
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            teamManager.addTeam(verantwoordelijke, naam, site);
+        });
+    }
+
     @Test
     public void addTeamRollbackBijFoutTest() {
+        Mockito.when(teamRepository.findAll()).thenReturn(Collections.emptyList());
         doThrow(new RuntimeException()).when(teamRepository).insert(any());
         assertThrows(RuntimeException.class, () -> teamManager.addTeam(VERANTWOORDELIJKE, "Site A", SITE));
         verify(teamRepository).rollbackTransaction();

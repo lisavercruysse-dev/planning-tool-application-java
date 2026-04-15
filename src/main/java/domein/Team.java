@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class Team {
     //site
 
     @ManyToMany(mappedBy = "teams")
-    private List<Werknemer> werknemers;
+    private List<Werknemer> werknemers = new ArrayList<>();
 
     @ManyToOne
     private Site site;
@@ -38,10 +39,11 @@ public class Team {
         this.site = site;
         this.naam = naam;
         verantwoordelijke.getTeams().add(this);
+        werknemers.add(verantwoordelijke);
     }
 
     public static Set<String> validate(Werknemer verantwoordelijke, String naam, Site site) {
-        Set<String> errors = new HashSet<String>();
+        Set<String> errors = new HashSet<>();
 
         if (verantwoordelijke == null) {
             errors.add("Verantwoordelijke moet ingevuld zijn");

@@ -1,9 +1,7 @@
 package org.sdp.sdp.gui;
 
-import domein.JobTitel;
-import domein.Team;
-import domein.Werknemer;
-import domein.WerknemerController;
+import domein.*;
+import javafx.util.StringConverter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -30,7 +28,7 @@ public class GebruikerToevoegenController {
     public ComboBox<String> jobTitelCombo;
 
     @FXML
-    public ComboBox<String> teamCombo;
+    public ComboBox<Team> teamCombo;
 
     @FXML
     public Label voornaamError;
@@ -44,10 +42,12 @@ public class GebruikerToevoegenController {
 
     private final MainController mainController;
     private final ObservableWerknemersTable werknemersTable;
+    private final TeamController teamController;
 
     public GebruikerToevoegenController(MainController mainController, ObservableWerknemersTable werknemersTable) {
         this.mainController = mainController;
         this.werknemersTable = werknemersTable;
+        this.teamController = new TeamController();
     }
 
     @FXML
@@ -61,6 +61,20 @@ public class GebruikerToevoegenController {
             jobTitelCombo.getItems().add(jobTitel.name().toLowerCase());
         }
         jobTitelCombo.getSelectionModel().selectFirst();
+
+        teamCombo.getItems().addAll(teamController.getAllTeams());
+        teamCombo.setConverter(new StringConverter<Team>() {
+
+            @Override
+            public String toString(Team team) {
+                return team == null ? "" : team.getNaam() + ": " + team.getSite().getName();
+            }
+
+            @Override
+            public Team fromString(String s) {
+                return null;
+            }
+        });
     }
 
     public void btnCloseAction(ActionEvent actionEvent) {

@@ -13,7 +13,7 @@ public class PlannerApplication extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/org.sdp.sdp/gui/Main.fxml"));
         Parent root = loader.load();
 
-        Scene scene = new Scene(root, 600, 400);
+        Scene scene = new Scene(root, 900, 600);
         primaryStage.setTitle("Planner");
         primaryStage.setScene(scene);
         primaryStage.show();
