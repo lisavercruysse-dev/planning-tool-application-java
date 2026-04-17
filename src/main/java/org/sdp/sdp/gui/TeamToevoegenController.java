@@ -101,7 +101,12 @@ public class TeamToevoegenController extends VBox {
 
         if(!errors.isEmpty()) return;
 
-        teamsTable.addTeam(verantwoordelijke, naam, site);
-        mainController.closePopup();
+        try {
+            teamsTable.addTeam(verantwoordelijke, naam, site);
+            mainController.closePopup();
+        } catch(IllegalArgumentException e) {
+            naamError.setText(e.getMessage());
+        }
+
     }
 }
