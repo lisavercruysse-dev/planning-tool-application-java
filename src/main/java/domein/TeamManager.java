@@ -46,4 +46,23 @@ public class TeamManager {
     public Team getTeamById(int id) {
         return this.teamRepository.get(id);
     }
+
+    public void deleteTeam(Team team) {
+        if (team == null) {
+            throw new IllegalArgumentException("Er is geen team geselecteerd.");
+        }
+
+        if (team.getWerknemers() != null && !team.getWerknemers().isEmpty()) {
+            throw new IllegalArgumentException("Dit team kan niet worden verwijderd omdat het nog leden bevat.");
+        }
+
+        teamRepository.startTransaction();
+        try {
+            teamRepository.delete(team);
+            teamRepository.commitTransaction();
+        } catch (Exception ex) {
+            teamRepository.rollbackTransaction();
+            throw ex;
+        }
+    }
 }

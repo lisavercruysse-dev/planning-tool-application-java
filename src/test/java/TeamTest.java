@@ -99,4 +99,31 @@ public class TeamTest {
         assertThrows(RuntimeException.class, () -> teamManager.addTeam(VERANTWOORDELIJKE, "Site A", SITE));
         verify(teamRepository).rollbackTransaction();
     }
+
+    @Test
+    public void deleteTeamSuccesTest() {
+        Team team = new Team(VERANTWOORDELIJKE, "Leeg Team", SITE);
+        team.getWerknemers().clear();
+
+        assertDoesNotThrow(() -> teamManager.deleteTeam(team));
+    }
+
+    @Test
+    public void deleteTeamMetLedenGooitExceptionTest() {
+        Team team = new Team(VERANTWOORDELIJKE, "Team met Leden", SITE);
+        Werknemer w1 = new Werknemer("Jan", "Janssens", JobTitel.WERKNEMER, "123", null);
+        team.getWerknemers().add(w1);
+
+        assertThrows(IllegalArgumentException.class, () -> teamManager.deleteTeam(team));
+    }
+
+    @Test
+    public void deleteTeamRollbackBijFoutTest() {
+        Team team = new Team(VERANTWOORDELIJKE, "Fout Team", SITE);
+        team.getWerknemers().clear();
+
+        doThrow(new RuntimeException()).when(teamRepository).delete(any());
+
+        assertThrows(RuntimeException.class, () -> teamManager.deleteTeam(team));
+    }
 }

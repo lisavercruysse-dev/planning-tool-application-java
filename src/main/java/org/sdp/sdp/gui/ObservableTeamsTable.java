@@ -45,4 +45,8 @@ public class ObservableTeamsTable {
         return ot;
     }
 
+    public void removeTeam(ObservableTeam observableTeam) {
+        teamController.deleteTeam(observableTeam.getTeam());
+        observableTeamList.remove(observableTeam);
+    }
 }
