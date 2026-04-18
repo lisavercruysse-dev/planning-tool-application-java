@@ -22,6 +22,10 @@ public class WerknemerController {
         return werknemerManager.getWerknemerList();
     }
 
+    public List<Werknemer> getWerknemersFromTeam(int id) {
+        return werknemerManager.getWerknemersFromTeam(id);
+    }
+
     public void wijzigWerknemer(Werknemer werknemer, String nieuweNaam, String nieuweJobTitel) {
         werknemerManager.wijzigWerknemer(werknemer, nieuweNaam, nieuweJobTitel);
     }

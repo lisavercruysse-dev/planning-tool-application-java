@@ -97,4 +97,21 @@ public class TeamControllerGUI extends VBox {
         }
     }
 
+    public void onDetailsAction(ActionEvent actionEvent) {
+        ObservableTeam selected = teamsTbl.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org.sdp.sdp/gui/Details.fxml"));
+                TeamDetailsController controller = new TeamDetailsController(mainController, selected);
+
+                loader.setController(controller);
+
+                Node popup = loader.load();
+                mainController.showPopup(popup);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 }

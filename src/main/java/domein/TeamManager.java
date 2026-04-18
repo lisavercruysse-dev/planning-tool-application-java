@@ -42,4 +42,8 @@ public class TeamManager {
         List<Team> teams = teamRepository.findAll();
         return teams;
     }
+
+    public Team getTeamById(int id) {
+        return this.teamRepository.get(id);
+    }
 }
