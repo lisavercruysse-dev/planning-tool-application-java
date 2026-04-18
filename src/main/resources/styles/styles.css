@@ -60,6 +60,71 @@
     -fx-text-fill: red;
 }
 
+.subTitel {
+    -fx-font-size: 17;
+    -fx-font-weight: bold;
+}
+
+.sectieTitel {
+    -fx-font-size: 13;
+    -fx-font-weight: bold;
+}
+
+.sectieInfo {
+    -fx-font-size: 13;
+    -fx-text-fill: #737373;
+}
+
+/* LIST */
+
+.list-view {
+   -fx-background-color: white;
+    -fx-border-color: transparent;
+}
+
+.list-view .viewport {
+    -fx-background-color: transparent;
+}
+.list-cell {
+    -fx-padding: 3 0 3 0;
+    -fx-font-size: 13;
+    -fx-text-fill: #737373;
+    -fx-background-color: transparent;
+}
+
+.list-cell:selected {
+    -fx-background-color: #EEF3FC;
+    -fx-text-fill: #333;
+}
+
+.list-cell:empty {
+    -fx-background-color: transparent;
+}
+
+.list-cell:filled {
+    -fx-border-color: transparent;
+}
+
+.list-cell:selected:filled {
+    -fx-background-color: #EEF3FC;
+    -fx-text-fill: #333333;
+}
+
+.list-cell:odd {
+    -fx-background-color: white;
+}
+
+.list-cell:even {
+    -fx-background-color: white;
+}
+
+.list-cell:hover {
+    -fx-background-color: #fafafa;
+}
+
+
+/* TABLE */
+
 .table {
     -fx-background-color: white;
     -fx-border-color: #e5e5e5;

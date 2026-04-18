@@ -20,4 +20,8 @@ public class TeamController {
     public List<Team> getAllTeams(){
         return teamManager.getAllTeams();
     }
+
+    public Team getTeamByID(int id){
+        return teamManager.getTeamById(id);
+    }
 }

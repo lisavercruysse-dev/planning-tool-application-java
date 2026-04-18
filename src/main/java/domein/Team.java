@@ -18,8 +18,10 @@ public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private int id;
 
+    @Column(name = "NAAM")
     private String naam;
 
     @ManyToOne
@@ -32,6 +34,7 @@ public class Team {
     private List<Werknemer> werknemers = new ArrayList<>();
 
     @ManyToOne
+    @JoinColumn(name = "SITE_ID")
     private Site site;
 
     public Team(Werknemer verantwoordelijke, String naam, Site site) {

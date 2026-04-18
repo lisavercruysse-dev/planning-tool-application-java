@@ -19,6 +19,7 @@ public class Werknemer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
     @Column(name="firstName")
@@ -28,9 +29,11 @@ public class Werknemer {
     private String achternaam;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "jobTitel")
     private JobTitel jobTitel;
     //private String jobTitel;
 
+    @Column(name="email")
     private String email;
 
     @Column(name="password_hash")
@@ -40,7 +43,7 @@ public class Werknemer {
     @JoinTable(
             name = "team_werknemers",
             joinColumns = @JoinColumn(name = "werknemerId", referencedColumnName = "id", columnDefinition = "INT UNSIGNED"),
-            inverseJoinColumns = @JoinColumn(name = "teamId", referencedColumnName = "ID")
+            inverseJoinColumns = @JoinColumn(name = "teamId", referencedColumnName = "ID", columnDefinition = "INT UNSIGNED")
     )
     private List<Team> teams = new ArrayList<>();
 

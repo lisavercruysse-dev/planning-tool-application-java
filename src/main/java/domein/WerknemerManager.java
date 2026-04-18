@@ -69,6 +69,10 @@ public class WerknemerManager {
         return werknemerRepo.getVerantwoordelijken();
     }
 
+    public List<Werknemer> getWerknemersFromTeam(int id) {
+        return werknemerRepo.getWerknemersFromTeam(id);
+    }
+
     public void closePersistency() {
         werknemerRepo.closePersistency();
     }

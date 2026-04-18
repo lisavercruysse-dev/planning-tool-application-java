@@ -17,4 +17,11 @@ public class GebruikerDaoJpa extends GenericDaoJpa<Werknemer> implements Gebruik
                 .setParameter("jobTitel", "verantwoordelijke")
                 .getResultList();
     }
+
+    @Override
+    public List<Werknemer> getWerknemersFromTeam(int id) {
+        return em.createQuery(
+                "SELECT w FROM Werknemer w JOIN w.teams t WHERE t.id = :teamId", Werknemer.class
+        ).setParameter("teamId", id).getResultList();
+    }
 }
