@@ -119,7 +119,4 @@ public class WerknemerManager {
         }
     }
 
-    public Werknemer getVerantwoordelijkeVoorTeam(int teamId) {
-        return werknemerRepo.getVerantwoordelijkeVoorTeam(teamId);
-    }
 }

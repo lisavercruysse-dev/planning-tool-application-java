@@ -50,7 +50,4 @@ public class WerknemerController {
         werknemerManager.verwijderWerknemerUitTeam(werknemerId, teamId);
     }
 
-    public Werknemer getVerantwoordelijkeVoorTeam(int teamId){
-        return werknemerManager.getVerantwoordelijkeVoorTeam(teamId);
-    }
 }
