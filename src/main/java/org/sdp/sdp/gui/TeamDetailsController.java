@@ -4,15 +4,21 @@ import domein.Team;
 import domein.WerknemerController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ListView;
+import lombok.Getter;
+
+import java.io.IOException;
 
 public class TeamDetailsController extends VBox {
     private final MainController mainController;
     private final ObservableWerknemerFromTeamList werknemersList;
     private final WerknemerController werknemerController;
+    @Getter
     private final Team team;
 
     @FXML
@@ -31,7 +37,7 @@ public class TeamDetailsController extends VBox {
         this.mainController = mainController;
         this.team = team.getTeam();
         this.werknemerController = new WerknemerController();
-        this.werknemersList = new ObservableWerknemerFromTeamList(werknemerController, team.getTeam().getId());
+        this.werknemersList = new ObservableWerknemerFromTeamList(werknemerController, team.getTeam().getId(), team);
     }
 
     @FXML
@@ -59,5 +65,20 @@ public class TeamDetailsController extends VBox {
 
     public void btnCloseAction(ActionEvent event) {
         mainController.closePopup();
+    }
+
+    public void btnWerknemerToevoegenAction(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org.sdp.sdp/gui/WerknemerToevoegen.fxml"));
+            WerknemerAanTeamToevoegenController controller = new WerknemerAanTeamToevoegenController(mainController, this, werknemersList);
+
+            loader.setController(controller);
+
+            Node popup = loader.load();
+            mainController.closePopup();
+            mainController.showPopup(popup);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }

@@ -24,4 +24,5 @@ public class TeamController {
     public Team getTeamByID(int id){
         return teamManager.getTeamById(id);
     }
+
 }

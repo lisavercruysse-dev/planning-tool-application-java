@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.sdp.sdp.gui.ObservableTeam;
 import org.sdp.sdp.gui.ObservableTeamsTable;
 
 import java.util.List;
@@ -16,6 +17,9 @@ public class ObservableTeamsTableTest {
 
     @Mock
     private TeamController teamController;
+
+    @Mock
+    private WerknemerController werknemerController;
 
     private static final Werknemer VERANTWOORDELIJKE = new Werknemer("Bart", "De Smedt", JobTitel.VERANTWOORDELIJKE, "12345678", null);
     private static final Site SITE = new Site("Site noord", "Gent", 100, "actief", "gezond");
@@ -49,5 +53,18 @@ public class ObservableTeamsTableTest {
         observableTeamsTable.addTeam(VERANTWOORDELIJKE, "Team C", SITE);
 
         assertEquals(3, observableTeamsTable.getFilteredTeams().size());
+    }
+
+    @Test
+    void werknemerCountWordtGeupdateBijToevoegenAanTeam() {
+        Team team = new Team(VERANTWOORDELIJKE, "Team A", SITE);
+        ObservableTeam observableTeam = new ObservableTeam(team);
+
+        int startAantal =  Integer.parseInt(observableTeam.aantalWerknemersProperty().get());
+
+        Werknemer w = new Werknemer("Pieter", "Willems", JobTitel.WERKNEMER, "12345678", null);
+
+        werknemerController.voegWerknemerToeAanTeam(w.getId(), team.getId());
+        assertEquals(startAantal + 1, observableTeamsTable.getFilteredTeams().size());
     }
 }

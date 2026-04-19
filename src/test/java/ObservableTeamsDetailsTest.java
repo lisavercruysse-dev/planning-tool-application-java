@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.sdp.sdp.gui.ObservableTeam;
 import org.sdp.sdp.gui.ObservableWerknemerFromTeamList;
 
 import java.util.List;
@@ -17,14 +18,14 @@ public class ObservableTeamsDetailsTest {
     @Mock
     WerknemerController werknemerController;
 
-    private static final Werknemer VERANTWOORDELIJKE =
-            new Werknemer("Bart", "De Smedt", JobTitel.VERANTWOORDELIJKE, "12345678", null);
+    @Mock
+    TeamController teamController;
 
-    private static final Site SITE =
-            new Site("Site noord", "Gent", 100, "actief", "gezond");
+    private ObservableTeam observableTeam;
 
+    private static final Werknemer VERANTWOORDELIJKE = new Werknemer("Bart", "De Smedt", JobTitel.VERANTWOORDELIJKE, "12345678", null);
+    private static final Site SITE = new Site("Site noord", "Gent", 100, "actief", "gezond");
     private ObservableWerknemerFromTeamList list;
-
     private Team team;
 
     @BeforeEach
@@ -35,14 +36,26 @@ public class ObservableTeamsDetailsTest {
         team = new Team(VERANTWOORDELIJKE, "Team A", SITE);
         team.getWerknemers().addAll(List.of(w1, w2));
 
+        observableTeam = new ObservableTeam(team);
+
         Mockito.when(werknemerController.getWerknemersFromTeam(team.getId()))
                 .thenReturn(List.of(w1, w2));
 
-        list = new ObservableWerknemerFromTeamList(werknemerController, team.getId());
+        list = new ObservableWerknemerFromTeamList(werknemerController, team.getId(), observableTeam);
     }
 
     @Test
     void lijstWordtCorrectOpgevuld() {
         assertEquals(2, list.getObservableList().size());
+    }
+
+    @Test
+    void lijstWordtCorrectGeupdate() {
+        Werknemer w3 = new Werknemer("Pieter", "Willems", JobTitel.WERKNEMER, "12345678", null);
+
+        Mockito.when(werknemerController.voegWerknemerToeAanTeam(w3.getId(), team.getId())).thenReturn(w3);
+
+        list.addWerknemer(w3);
+        assertEquals(3, list.getObservableList().size());
     }
 }

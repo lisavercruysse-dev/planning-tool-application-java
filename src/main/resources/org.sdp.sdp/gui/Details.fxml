@@ -39,7 +39,7 @@
             <HBox alignment="TOP_CENTER" spacing="10.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#btnCloseAction" styleClass="cancelButton" text="Sluiten" />
-                  <Button mnemonicParsing="false" styleClass="confirmButton" text="Werknemer Toevoegen" />
+                  <Button mnemonicParsing="false" onAction="#btnWerknemerToevoegenAction" styleClass="confirmButton" text="Werknemer Toevoegen" />
                </children>
             </HBox>
          </children>

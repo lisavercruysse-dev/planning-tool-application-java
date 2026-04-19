@@ -22,6 +22,10 @@ public class WerknemerController {
         return werknemerManager.getWerknemerList();
     }
 
+    public List<Werknemer> getGewoneWerknemers() {
+        return werknemerManager.getGewoneWerknemers();
+    }
+
     public List<Werknemer> getWerknemersFromTeam(int id) {
         return werknemerManager.getWerknemersFromTeam(id);
     }
@@ -36,5 +40,9 @@ public class WerknemerController {
 
     public List<Werknemer> getVerantwoordelijken() {
         return werknemerManager.getVerantwoordelijken();
+    }
+
+    public Werknemer voegWerknemerToeAanTeam(int werknemerId, int teamId) {
+        return werknemerManager.voegWerknemerToeAanTeam(werknemerId, teamId);
     }
 }
