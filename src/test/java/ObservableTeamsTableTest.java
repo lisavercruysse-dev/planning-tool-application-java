@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.sdp.sdp.gui.ObservableTeam;
 import org.sdp.sdp.gui.ObservableTeamsTable;
 
 import java.util.List;
@@ -49,5 +50,15 @@ public class ObservableTeamsTableTest {
         observableTeamsTable.addTeam(VERANTWOORDELIJKE, "Team C", SITE);
 
         assertEquals(3, observableTeamsTable.getFilteredTeams().size());
+    }
+
+    @Test
+    void lijstWordtGeupdateBijVerwijderen() {
+        int oorspronkelijkeGrootte = observableTeamsTable.getFilteredTeams().size();
+        ObservableTeam toRemove = observableTeamsTable.getFilteredTeams().get(0);
+
+        observableTeamsTable.removeTeam(toRemove);
+
+        assertEquals(oorspronkelijkeGrootte - 1, observableTeamsTable.getFilteredTeams().size());
     }
 }
