@@ -38,6 +38,7 @@
             </VBox>
             <HBox alignment="TOP_CENTER" spacing="10.0">
                <children>
+                  <Button mnemonicParsing="false" onAction="#onVerwijderAction" styleClass="cancelButton" text="Verwijder" />
                   <Button mnemonicParsing="false" onAction="#btnCloseAction" styleClass="cancelButton" text="Sluiten" />
                   <Button mnemonicParsing="false" onAction="#btnWerknemerToevoegenAction" styleClass="confirmButton" text="Werknemer Toevoegen" />
                </children>

@@ -45,4 +45,12 @@ public class WerknemerController {
     public Werknemer voegWerknemerToeAanTeam(int werknemerId, int teamId) {
         return werknemerManager.voegWerknemerToeAanTeam(werknemerId, teamId);
     }
+
+    public void verwijderWerknemerUitTeam(int werknemerId, int teamId) {
+        werknemerManager.verwijderWerknemerUitTeam(werknemerId, teamId);
+    }
+
+    public Werknemer getVerantwoordelijkeVoorTeam(int teamId){
+        return werknemerManager.getVerantwoordelijkeVoorTeam(teamId);
+    }
 }

@@ -99,4 +99,27 @@ public class WerknemerManager {
     public List<Werknemer> getGewoneWerknemers() {
         return werknemerRepo.getGewoneWerknemers();
     }
+
+    public void verwijderWerknemerUitTeam(int werknemerId, int teamId) {
+        werknemerRepo.startTransaction();
+        try {
+            Werknemer w = werknemerRepo.get(werknemerId);
+            Team t = w.getTeams().stream()
+                    .filter(team -> team.getId() == teamId)
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("Werknemer zit niet in dit team"));
+
+            w.getTeams().remove(t);
+            t.getWerknemers().remove(w);
+
+            werknemerRepo.commitTransaction();
+        } catch (Exception ex) {
+            werknemerRepo.rollbackTransaction();
+            throw ex;
+        }
+    }
+
+    public Werknemer getVerantwoordelijkeVoorTeam(int teamId) {
+        return werknemerRepo.getVerantwoordelijkeVoorTeam(teamId);
+    }
 }
