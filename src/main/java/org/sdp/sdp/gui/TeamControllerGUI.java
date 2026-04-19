@@ -6,6 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -114,4 +116,30 @@ public class TeamControllerGUI extends VBox {
         }
     }
 
+    public void onVerwijderenAction(ActionEvent actionEvent) {
+        ObservableTeam selected = teamsTbl.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Weet je zeker dat je dit team wilt verwijderen?", ButtonType.YES, ButtonType.NO);
+            confirm.setHeaderText("Team verwijderen");
+            confirm.showAndWait();
+
+            if (confirm.getResult() == ButtonType.YES) {
+                try {
+                    observableTeamsTable.removeTeam(selected);
+                } catch (IllegalArgumentException ex) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Fout bij verwijderen");
+                    alert.setHeaderText("Kan team niet verwijderen");
+                    alert.setContentText(ex.getMessage());
+                    alert.showAndWait();
+                }
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Geen team geselecteerd");
+            alert.setHeaderText(null);
+            alert.setContentText("Selecteer eerst een team in de tabel om te verwijderen.");
+            alert.showAndWait();
+        }
+    }
 }

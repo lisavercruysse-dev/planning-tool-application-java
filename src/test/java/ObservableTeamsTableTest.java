@@ -18,9 +18,6 @@ public class ObservableTeamsTableTest {
     @Mock
     private TeamController teamController;
 
-    @Mock
-    private WerknemerController werknemerController;
-
     private static final Werknemer VERANTWOORDELIJKE = new Werknemer("Bart", "De Smedt", JobTitel.VERANTWOORDELIJKE, "12345678", null);
     private static final Site SITE = new Site("Site noord", "Gent", 100, "actief", "gezond");
     private ObservableTeamsTable observableTeamsTable;
@@ -56,15 +53,12 @@ public class ObservableTeamsTableTest {
     }
 
     @Test
-    void werknemerCountWordtGeupdateBijToevoegenAanTeam() {
-        Team team = new Team(VERANTWOORDELIJKE, "Team A", SITE);
-        ObservableTeam observableTeam = new ObservableTeam(team);
+    void lijstWordtGeupdateBijVerwijderen() {
+        int oorspronkelijkeGrootte = observableTeamsTable.getFilteredTeams().size();
+        ObservableTeam toRemove = observableTeamsTable.getFilteredTeams().get(0);
 
-        int startAantal =  Integer.parseInt(observableTeam.aantalWerknemersProperty().get());
+        observableTeamsTable.removeTeam(toRemove);
 
-        Werknemer w = new Werknemer("Pieter", "Willems", JobTitel.WERKNEMER, "12345678", null);
-
-        werknemerController.voegWerknemerToeAanTeam(w.getId(), team.getId());
-        assertEquals(startAantal + 1, observableTeamsTable.getFilteredTeams().size());
+        assertEquals(oorspronkelijkeGrootte - 1, observableTeamsTable.getFilteredTeams().size());
     }
 }

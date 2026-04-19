@@ -25,4 +25,7 @@ public class TeamController {
         return teamManager.getTeamById(id);
     }
 
+    public void deleteTeam(Team team) {
+        teamManager.deleteTeam(team);
+    }
 }
