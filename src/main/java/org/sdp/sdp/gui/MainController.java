@@ -1,5 +1,6 @@
 package org.sdp.sdp.gui;
 
+import domein.SiteController;
 import domein.TeamController;
 import domein.WerknemerController;
 import javafx.fxml.FXML;
@@ -33,6 +34,9 @@ public class MainController {
     public ToggleButton btnTeams;
 
     @FXML
+    public ToggleButton btnSites;
+
+    @FXML
     public StackPane popupContent;
 
     @FXML
@@ -45,6 +49,7 @@ public class MainController {
     private void initialize() {
         WerknemerController werknemerController = new WerknemerController();
         TeamController teamController = new TeamController();
+        SiteController siteController = new SiteController();
         navButtons.put(btnGebruikers, () -> {
             GebruikersController c = new GebruikersController(this, werknemerController);
             return c;
@@ -54,6 +59,10 @@ public class MainController {
         navButtons.put(btnTeams, () -> {
             TeamControllerGUI teamControllerGUI = new TeamControllerGUI(this, teamController);
             return teamControllerGUI;
+        });
+        navButtons.put(btnSites, () -> {
+            SiteControllerGUI siteControllerGUI = new SiteControllerGUI(this, siteController);
+            return siteControllerGUI;
         });
         navGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
             if (newToggle != null) {
