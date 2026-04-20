@@ -34,10 +34,8 @@ public class WerknemerManager {
         }
         return w;
     }
-  
       public List<Werknemer> getWerknemerList() {
         List<Werknemer> result = werknemerRepo.findAll();
-        System.out.print("lijst werknemers: " + result);
         return result != null ? result : Collections.emptyList();
     }
 
@@ -75,5 +73,30 @@ public class WerknemerManager {
 
     public void closePersistency() {
         werknemerRepo.closePersistency();
+    }
+
+    public Werknemer voegWerknemerToeAanTeam(int werknemerId, int teamId) {
+        boolean zitAlInTeam = werknemerRepo.get(werknemerId)
+                .getTeams()
+                .stream()
+                .anyMatch(t -> t.getId() == teamId);
+
+        if (zitAlInTeam) {
+            throw new IllegalArgumentException("Deze werknemer zit al in dit team");
+        }
+        werknemerRepo.startTransaction();
+        Werknemer w;
+        try {
+            w = werknemerRepo.voegWerknemerToeAanTeam(werknemerId, teamId);
+            werknemerRepo.commitTransaction();
+        } catch (Exception ex) {
+            werknemerRepo.rollbackTransaction();
+            throw ex;
+        }
+        return w;
+    }
+
+    public List<Werknemer> getGewoneWerknemers() {
+        return werknemerRepo.getGewoneWerknemers();
     }
 }

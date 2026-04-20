@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import repository.GebruikerDao;
 import repository.GenericDao;
@@ -91,5 +92,32 @@ public class WerknemerTest {
         doThrow(new RuntimeException()).when(werknemerRepo).insert(any());
         assertThrows(RuntimeException.class, () -> werknemerManager.addWerknemer("Thomas", "De Bakker", "werknemer", "12345678", TEAM));
         verify(werknemerRepo).rollbackTransaction();
+    }
+
+    @Test
+    public void voegWerknemerToeAanTeamTest() {
+        Werknemer w = new Werknemer("Pieter", "Willems", JobTitel.WERKNEMER, "12345678", null);
+
+        Mockito.when(werknemerRepo.get(w.getId())).thenReturn(w);
+        Mockito.when(werknemerRepo.voegWerknemerToeAanTeam(w.getId(), TEAM.getId())).thenReturn(w);
+
+        Werknemer result = werknemerManager.voegWerknemerToeAanTeam(w.getId(), TEAM.getId());
+
+        assertEquals(w, result);
+
+        Mockito.verify(werknemerRepo).startTransaction();
+        Mockito.verify(werknemerRepo).voegWerknemerToeAanTeam(w.getId(), TEAM.getId());
+        Mockito.verify(werknemerRepo).commitTransaction();
+    }
+
+    @Test
+    public void voegWerknemerToeAanTeamTest_werknemerAlInTeam() {
+        Team team = new Team(VERANTWOORDELIJKE, "Team A", SITE);
+        Werknemer w = new Werknemer("Pieter", "Willems", JobTitel.WERKNEMER, "12345678", null);
+
+        w.getTeams().add(team);
+
+        Mockito.when(werknemerRepo.get(w.getId())).thenReturn(w);
+        assertThrows(IllegalArgumentException.class, () -> werknemerManager.voegWerknemerToeAanTeam(w.getId(), TEAM.getId()));
     }
 }

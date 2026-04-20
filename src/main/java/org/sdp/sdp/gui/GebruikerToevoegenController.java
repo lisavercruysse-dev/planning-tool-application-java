@@ -111,6 +111,7 @@ public class GebruikerToevoegenController {
         if (!errors.isEmpty()) return;
 
         werknemersTable.addWerknemer(voornaam, achternaam, jobtitel, wachtwoord, team);
+
         mainController.closePopup();
     }
 }
