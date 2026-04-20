@@ -38,10 +38,6 @@ public class ObservableTeamsTable {
         });
     }
 
-    public void editAantalWerknemers(ObservableTeam team) {
-        team.aantalWerknemersProperty().set(String.valueOf(team.getTeam().getWerknemers().size()));
-    }
-
     public ObservableTeam addTeam(Werknemer verantwoordelijke, String naam, Site site) {
         Team t = teamController.addTeam(verantwoordelijke, naam, site);
         ObservableTeam ot = new ObservableTeam(t);

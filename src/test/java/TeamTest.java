@@ -70,7 +70,6 @@ public class TeamTest {
 
         assertEquals(VERANTWOORDELIJKE, team.getVerantwoordelijke());
         assertEquals(SITE, team.getSite());
-        assertTrue(VERANTWOORDELIJKE.getTeams().contains(team));
     }
 
     @ParameterizedTest
@@ -83,7 +82,7 @@ public class TeamTest {
 
     @ParameterizedTest
     @MethodSource("bestaandTeamWaarden")
-    public void addTeamBestaatAl(Werknemer verantwoordelijke, String naam, Site site) {
+    public void addTeamBestaatAlTest(Werknemer verantwoordelijke, String naam, Site site) {
         Team bestaandTeam = new Team(VERANTWOORDELIJKE, "Team A", site);
         Mockito.when(teamRepository.findAll()).thenReturn(List.of(bestaandTeam));
 

@@ -41,7 +41,6 @@ public class Team {
         this.verantwoordelijke = verantwoordelijke;
         this.site = site;
         this.naam = naam;
-        verantwoordelijke.getTeams().add(this);
         werknemers.add(verantwoordelijke);
     }
 

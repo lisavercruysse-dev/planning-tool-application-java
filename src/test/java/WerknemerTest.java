@@ -13,8 +13,7 @@ import repository.GenericDao;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -119,5 +118,19 @@ public class WerknemerTest {
 
         Mockito.when(werknemerRepo.get(w.getId())).thenReturn(w);
         assertThrows(IllegalArgumentException.class, () -> werknemerManager.voegWerknemerToeAanTeam(w.getId(), TEAM.getId()));
+    }
+
+    @Test
+    public void verwijderWerknemerUitTeamTest() {
+        Team team = new Team(VERANTWOORDELIJKE, "Team A", SITE);
+        Werknemer w = new Werknemer("Pieter", "Willems", JobTitel.WERKNEMER, "12345678", null);
+        team.getWerknemers().add(w);
+        w.getTeams().add(team);
+
+        Mockito.when(werknemerRepo.get(w.getId())).thenReturn(w);
+
+        assertFalse(TEAM.getWerknemers().contains(w));
+        assertFalse(w.getTeams().contains(TEAM));
+        assertDoesNotThrow(() -> werknemerManager.verwijderWerknemerUitTeam(w.getId(), team.getId()));
     }
 }

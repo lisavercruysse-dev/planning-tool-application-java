@@ -37,5 +37,11 @@ public class ObservableWerknemerFromTeamList {
         observableTeam.aantalWerknemersProperty().set(String.valueOf(observableList.size()));
         return ow;
     }
+
+    public void verwijderWerknemerUitTeam(ObservableWerknemer observableWerknemer) {
+        controller.verwijderWerknemerUitTeam(observableWerknemer.getWerknemer().getId(), teamId);
+        observableList.remove(observableWerknemer);
+        observableTeam.aantalWerknemersProperty().set(String.valueOf(observableList.size()));
+    }
 }
 

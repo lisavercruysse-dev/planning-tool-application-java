@@ -45,4 +45,10 @@ public class GebruikerDaoJpa extends GenericDaoJpa<Werknemer> implements Gebruik
                 Werknemer.class
         ).setParameter("jobTitel", "werknemer").getResultList();
     }
+
+    @Override
+    public Werknemer getVerantwoordelijkeVoorTeam(int teamId) {
+        Team team = em.find(Team.class, teamId);
+        return team != null ? team.getVerantwoordelijke() : null;
+    }
 }

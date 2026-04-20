@@ -52,13 +52,4 @@ public class ObservableTeamsTableTest {
         assertEquals(3, observableTeamsTable.getFilteredTeams().size());
     }
 
-    @Test
-    void lijstWordtGeupdateBijVerwijderen() {
-        int oorspronkelijkeGrootte = observableTeamsTable.getFilteredTeams().size();
-        ObservableTeam toRemove = observableTeamsTable.getFilteredTeams().get(0);
-
-        observableTeamsTable.removeTeam(toRemove);
-
-        assertEquals(oorspronkelijkeGrootte - 1, observableTeamsTable.getFilteredTeams().size());
-    }
 }

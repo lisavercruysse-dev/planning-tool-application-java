@@ -6,10 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.ListView;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -79,6 +77,19 @@ public class TeamDetailsController extends VBox {
             mainController.showPopup(popup);
         } catch (IOException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public void onVerwijderAction(ActionEvent event) {
+        ObservableWerknemer selected = listWerknemers.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Weet je zeker dat je deze werknemer uit het team wil verwijderen?", ButtonType.YES, ButtonType.NO);
+            confirm.setHeaderText("Werknemer verwijderen");
+            confirm.showAndWait();
+
+            if (confirm.getResult() == ButtonType.YES) {
+                werknemersList.verwijderWerknemerUitTeam(selected);
+            }
         }
     }
 }
