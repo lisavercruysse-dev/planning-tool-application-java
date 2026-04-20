@@ -33,7 +33,7 @@ public class ObservableSite {
     public StringProperty operationeleStatusProperty() { return operationeleStatus; }
     public StringProperty productieStatusProperty() { return productieStatus; }
 
-    public String getname() {
+    public String getName() {
         return name.get();
     }
 

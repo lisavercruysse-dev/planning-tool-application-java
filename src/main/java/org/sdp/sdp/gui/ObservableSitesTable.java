@@ -7,6 +7,7 @@ import javafx.collections.transformation.FilteredList;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ObservableSitesTable {
 
@@ -21,9 +22,9 @@ public class ObservableSitesTable {
 
         List<Site> sites = this.controller.getAllSites();
         if (sites != null) {
-            sites.forEach(p -> sitesObservableList.add(new ObservableSite(p)));
+            sites.forEach(site -> sitesObservableList.add(new ObservableSite(site)));
         }
-        this.filteredSiteList = new FilteredList<>(sitesObservableList, p -> true);
+        this.filteredSiteList = new FilteredList<>(sitesObservableList, site -> true);
     }
 
     public void changeFilter(String filterValue) {
@@ -31,9 +32,9 @@ public class ObservableSitesTable {
             if (filterValue == null || filterValue.isBlank()) return true;
             String lower = filterValue.toLowerCase();
             return p.nameProperty().get().toLowerCase().contains(lower) ||
-                    p.locatieProperty().get().toLowerCase().contains(lower) ||
-                    p.operationeleStatusProperty().get().toLowerCase().contains(lower) ||
-                    p.productieStatusProperty().get().toLowerCase().contains(lower);
+                    Objects.toString(p.locatieProperty().get(),"").toLowerCase().contains(lower) ||
+                    Objects.toString(p.operationeleStatusProperty().get(),"").toLowerCase().contains(lower) ||
+                    Objects.toString(p.productieStatusProperty().get(),"").toLowerCase().contains(lower);
         });
     }
 

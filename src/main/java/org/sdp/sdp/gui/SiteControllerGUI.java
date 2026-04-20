@@ -96,7 +96,7 @@ public class SiteControllerGUI extends VBox {
                         int index = tblSites.
                                 getSelectionModel().getSelectedIndex();
                         System.out.printf("%d %s%n", index,
-                                newValue.getname());
+                                newValue.getName());
                     }
                 });
     }
