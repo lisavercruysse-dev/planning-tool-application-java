@@ -91,7 +91,7 @@ public class GebruikersController extends VBox {
 
         // Default sortering instellen
         firstNameCol.setSortType(TableColumn.SortType.ASCENDING);
-        tblWerknemers.getSortOrder().add(firstNameCol);
+        tblWerknemers.getSortOrder().add(lastNameCol);
 
         tblWerknemers.getSelectionModel().selectedItemProperty().
                 addListener((observableValue, oldPerson, newPerson) -> {
