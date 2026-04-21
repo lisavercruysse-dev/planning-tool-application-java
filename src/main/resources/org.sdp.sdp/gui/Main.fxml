@@ -39,15 +39,24 @@
                                  </image>
                               </ImageView>
                            </graphic></ToggleButton>
-                        <ToggleButton fx:id="btnTeams" alignment="CENTER_LEFT" mnemonicParsing="false" styleClass="sidebar-button" text="Teams" toggleGroup="$navGroup">
-                           <graphic>
-                              <ImageView fitHeight="150.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../images/users-solid.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </ToggleButton>
+                           <ToggleButton fx:id="btnTeams" alignment="CENTER_LEFT" mnemonicParsing="false" styleClass="sidebar-button" text="Teams" toggleGroup="$navGroup">
+                              <graphic>
+                                 <ImageView fitHeight="150.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                       <Image url="@../../images/users-solid.png" />
+                                    </image>
+                                 </ImageView>
+                              </graphic>
+                           </ToggleButton>
+                          <ToggleButton fx:id="btnSites" alignment="CENTER_LEFT" mnemonicParsing="false" styleClass="sidebar-button" text="Sites" toggleGroup="$navGroup">
+                             <graphic>
+                                <ImageView fitHeight="150.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                   <image>
+                                      <Image url="@../../images/file-solid.png" />
+                                   </image>
+                                </ImageView>
+                             </graphic>
+                          </ToggleButton>
                            <ToggleButton fx:id="btnLogs" alignment="CENTER_LEFT" contentDisplay="LEFT" styleClass="sidebar-button" text="Logs" toggleGroup="$navGroup">
                            <graphic>
                               <ImageView fitHeight="150.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
