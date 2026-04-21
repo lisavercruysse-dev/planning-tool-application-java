@@ -2,15 +2,18 @@ package org.sdp.sdp.gui;
 
 import domein.WerknemerController;
 import domein.WerknemerManager;
+import javafx.collections.FXCollections;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import lombok.Setter;
 
@@ -19,6 +22,9 @@ import java.io.IOException;
 
 public class GebruikersController extends VBox {
     private final MainController mainController;
+
+    @FXML
+    private ComboBox<String> cmbFilterKolom;
 
     @FXML
     private TextField txtFilter;
@@ -80,6 +86,14 @@ public class GebruikersController extends VBox {
         jobTitelCol.setCellValueFactory(cellData -> cellData.getValue().jobTitelProperty());
         emailCol.setCellValueFactory(cellData -> cellData.getValue().emailProperty());
 
+        cmbFilterKolom.setItems(FXCollections.observableArrayList(
+                "Alle kolommen", "Achternaam", "Voornaam", "Jobtitel", "Email"
+        ));
+        cmbFilterKolom.setValue("Alle kolommen");
+
+        // Herfilter wanneer de keuze verandert
+        cmbFilterKolom.setOnAction(e -> filter(null));
+
         // SortedList in GUI
         SortedList<ObservableWerknemer> sortedList =
                 new SortedList<>(observableWerknemersTable.getFilteredPersonList());
@@ -107,8 +121,10 @@ public class GebruikersController extends VBox {
     }
 
     @FXML
-    private void filter() {
-        observableWerknemersTable.changeFilter(txtFilter.getText());
+    private void filter(KeyEvent event) {
+        String filterValue = txtFilter.getText();
+        String kolom = cmbFilterKolom.getValue();
+        observableWerknemersTable.changeFilter(filterValue, kolom);
     }
 
 /*

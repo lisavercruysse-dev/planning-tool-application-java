@@ -27,14 +27,23 @@ public class ObservableSitesTable {
         this.filteredSiteList = new FilteredList<>(sitesObservableList, site -> true);
     }
 
-    public void changeFilter(String filterValue) {
+    public void changeFilter(String filterValue, String kolom) {
         filteredSiteList.setPredicate(p -> {
             if (filterValue == null || filterValue.isBlank()) return true;
             String lower = filterValue.toLowerCase();
-            return p.nameProperty().get().toLowerCase().contains(lower) ||
-                    Objects.toString(p.locatieProperty().get(),"").toLowerCase().contains(lower) ||
-                    Objects.toString(p.operationeleStatusProperty().get(),"").toLowerCase().contains(lower) ||
-                    Objects.toString(p.productieStatusProperty().get(),"").toLowerCase().contains(lower);
+
+            return switch (kolom) {
+                case "Naam" -> Objects.toString(p.nameProperty().get(), "").toLowerCase().contains(lower);
+                case "Locatie" -> Objects.toString(p.locatieProperty().get(), "").toLowerCase().contains(lower);
+                case "Operationele Status" ->
+                        Objects.toString(p.operationeleStatusProperty().get(), "").toLowerCase().contains(lower);
+                case "Productie Status" ->
+                        Objects.toString(p.productieStatusProperty().get(), "").toLowerCase().contains(lower);
+                default -> p.nameProperty().get().toLowerCase().contains(lower) ||
+                        Objects.toString(p.locatieProperty().get(), "").toLowerCase().contains(lower) ||
+                        Objects.toString(p.operationeleStatusProperty().get(), "").toLowerCase().contains(lower) ||
+                        Objects.toString(p.productieStatusProperty().get(), "").toLowerCase().contains(lower);
+            };
         });
     }
 

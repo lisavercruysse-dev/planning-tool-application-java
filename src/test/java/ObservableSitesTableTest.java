@@ -42,7 +42,7 @@ public class ObservableSitesTableTest {
 
         // Act
         ObservableSitesTable table = new ObservableSitesTable(controller);
-        table.changeFilter("Site Gent");
+        table.changeFilter("Site Gent", "Naam");
 
         // Assert
         assertEquals(1, table.getFilteredSiteList().size());
@@ -61,7 +61,7 @@ public class ObservableSitesTableTest {
 
         // Act
         ObservableSitesTable table = new ObservableSitesTable(controller);
-        table.changeFilter("Gent");
+        table.changeFilter("Gent", "Locatie");
 
         // Assert
         assertEquals(1, table.getFilteredSiteList().size());
@@ -80,7 +80,7 @@ public class ObservableSitesTableTest {
 
         // Act
         ObservableSitesTable table = new ObservableSitesTable(controller);
-        table.changeFilter("Inactief");
+        table.changeFilter("Inactief", "Operationele Status");
 
         // Assert
         assertEquals(1, table.getFilteredSiteList().size());
@@ -99,7 +99,7 @@ public class ObservableSitesTableTest {
 
         // Act
         ObservableSitesTable table = new ObservableSitesTable(controller);
-        table.changeFilter("Gestopt");
+        table.changeFilter("Gestopt", "Productie Status");
 
         // Assert
         assertEquals(1, table.getFilteredSiteList().size());
@@ -118,7 +118,7 @@ public class ObservableSitesTableTest {
 
         // Act
         ObservableSitesTable table = new ObservableSitesTable(controller);
-        table.changeFilter("abc");
+        table.changeFilter("abc", "Alle kolommen");
 
         // Assert
         assertEquals(0, table.getFilteredSiteList().size());
@@ -136,7 +136,7 @@ public class ObservableSitesTableTest {
 
         // Act
         ObservableSitesTable table = new ObservableSitesTable(controller);
-        table.changeFilter("");
+        table.changeFilter("", "Alle kolommen");
 
         // Assert
         assertEquals(2, table.getFilteredSiteList().size());

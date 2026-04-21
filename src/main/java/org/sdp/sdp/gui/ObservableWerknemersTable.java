@@ -9,6 +9,7 @@ import javafx.collections.transformation.FilteredList;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ObservableWerknemersTable {
 
@@ -28,13 +29,20 @@ public class ObservableWerknemersTable {
         this.filteredPersonList = new FilteredList<>(werknemerObservableList, p -> true);
     }
 
-    public void changeFilter(String filterValue) {
+    public void changeFilter(String filterValue, String kolom) {
         filteredPersonList.setPredicate(p -> {
             if (filterValue == null || filterValue.isBlank()) return true;
             String lower = filterValue.toLowerCase();
-            return p.firstNameProperty().get().toLowerCase().contains(lower) ||
-                    p.lastNameProperty().get().toLowerCase().contains(lower) ||
-                    p.jobTitelProperty().get().toLowerCase().contains(lower);
+            return switch (kolom) {
+                case "Achternaam" -> p.lastNameProperty().get().toLowerCase().contains(lower);
+                case "Voornaam" -> p.firstNameProperty().get().toLowerCase().contains(lower);
+                case "Jobtitel" -> p.jobTitelProperty().get().toLowerCase().contains(lower);
+                case "Email" -> p.emailProperty().get().toLowerCase().contains(lower);
+                default -> p.firstNameProperty().get().toLowerCase().contains(lower) ||
+                        p.lastNameProperty().get().toLowerCase().contains(lower) ||
+                        p.jobTitelProperty().get().toLowerCase().contains(lower) ||
+                        p.emailProperty().get().toLowerCase().contains(lower);
+            };
         });
     }
 
