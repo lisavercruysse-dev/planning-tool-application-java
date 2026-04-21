@@ -41,7 +41,6 @@ public class Team {
         this.verantwoordelijke = verantwoordelijke;
         this.site = site;
         this.naam = naam;
-        werknemers.add(verantwoordelijke);
     }
 
     public static Set<String> validate(Werknemer verantwoordelijke, String naam, Site site) {
