@@ -1,15 +1,15 @@
 package org.sdp.sdp.gui;
 
-import domein.Team;
-import domein.Werknemer;
 import domein.WerknemerController;
+import dto.WerknemerInputDTO;
+import dto.WerknemerDTO;
+import exception.WerknemerInformationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.Objects;
 
 public class ObservableWerknemersTable {
 
@@ -22,7 +22,7 @@ public class ObservableWerknemersTable {
         this.controller = controller;
         this.werknemerObservableList = FXCollections.observableArrayList();
 
-        List<Werknemer> werknemers = this.controller.getWerknemers();
+        List<WerknemerDTO> werknemers = this.controller.getWerknemers();
         if (werknemers != null) {
             werknemers.forEach(p -> werknemerObservableList.add(new ObservableWerknemer(p)));
         }
@@ -46,8 +46,8 @@ public class ObservableWerknemersTable {
         });
     }
 
-    public ObservableWerknemer addWerknemer(String voornaam, String achternaam, String jobTitel, String wachtwoord, Team team) {
-        Werknemer w = controller.addWerknemer(voornaam, achternaam, jobTitel, wachtwoord, team);
+    public ObservableWerknemer addWerknemer(WerknemerInputDTO dto) throws WerknemerInformationException {
+        WerknemerDTO w = controller.addWerknemer(dto);
         ObservableWerknemer ow = new ObservableWerknemer(w);
         werknemerObservableList.add(ow);
         return ow;

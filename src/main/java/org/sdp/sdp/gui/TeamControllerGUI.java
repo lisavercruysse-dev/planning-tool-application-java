@@ -1,5 +1,7 @@
 package org.sdp.sdp.gui;
 
+import domein.SiteController;
+import domein.WerknemerController;
 import javafx.beans.binding.Bindings;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
@@ -34,9 +36,9 @@ public class TeamControllerGUI extends VBox {
     @FXML
     private TableView<ObservableTeam> teamsTbl;
 
-    public TeamControllerGUI(MainController mainController, TeamController controller) {
+    public TeamControllerGUI(MainController mainController, TeamController teamController, WerknemerController werknemerController, SiteController siteController) {
         this.mainController = mainController;
-        this.observableTeamsTable = new ObservableTeamsTable(controller);
+        this.observableTeamsTable = new ObservableTeamsTable(teamController, werknemerController, siteController);
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/org.sdp.sdp/gui/teams.fxml"));
         loader.setRoot(this);

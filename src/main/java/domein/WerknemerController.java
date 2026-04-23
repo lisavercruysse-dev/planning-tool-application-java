@@ -1,8 +1,9 @@
 package domein;
 
+import dto.WerknemerInputDTO;
+import dto.WerknemerDTO;
+import exception.WerknemerInformationException;
 import repository.GebruikerDaoJpa;
-import repository.GenericDao;
-import repository.GenericDaoJpa;
 
 import java.util.List;
 
@@ -14,20 +15,37 @@ public class WerknemerController {
         this.werknemerManager = new WerknemerManager(new GebruikerDaoJpa());
     }
 
-    public Werknemer addWerknemer(String voornaam, String achternaam, String jobtitel, String wachtwoord, Team team) {
-        return werknemerManager.addWerknemer(voornaam, achternaam, jobtitel, wachtwoord, team);
+    public WerknemerDTO addWerknemer(WerknemerInputDTO werknemerInputDTO) throws WerknemerInformationException {
+        Werknemer w = werknemerManager.addWerknemer(werknemerInputDTO);
+        return new WerknemerDTO(w.getId(), w.getVoornaam(), w.getAchternaam(), w.getJobTitel().name(), w.getTelefoon(), w.getGeboortedatum(),
+                w.getLand(), w.getPostcode(), w.getStad(), w.getStraat(), w.getHuisnummer(), w.getBus(), w.getEmail(), w.getStatus());
      }
   
-    public List<Werknemer> getWerknemers() {
-        return werknemerManager.getWerknemerList();
+    public List<WerknemerDTO> getWerknemers() {
+        List<Werknemer> werknemers = werknemerManager.getWerknemerList();
+        return werknemers.stream().map(w ->
+                new WerknemerDTO(w.getId(), w.getVoornaam(), w.getAchternaam(), w.getJobTitel().name(), w.getTelefoon(), w.getGeboortedatum(),
+                w.getLand(), w.getPostcode(), w.getStad(), w.getStraat(), w.getHuisnummer(), w.getBus(), w.getEmail(), w.getStatus())).toList();
     }
 
-    public List<Werknemer> getGewoneWerknemers() {
-        return werknemerManager.getGewoneWerknemers();
+    public WerknemerDTO getVerantwoordelijkeVanTeam(int teamId) {
+        Werknemer w = werknemerManager.getVerantwoordelijkeVanTeam(teamId);
+        return new WerknemerDTO(w.getId(), w.getVoornaam(), w.getAchternaam(), w.getJobTitel().name(), w.getTelefoon(), w.getGeboortedatum(),
+                w.getLand(), w.getPostcode(), w.getStad(), w.getStraat(), w.getHuisnummer(), w.getBus(), w.getEmail(), w.getStatus());
     }
 
-    public List<Werknemer> getWerknemersFromTeam(int id) {
-        return werknemerManager.getWerknemersFromTeam(id);
+    public List<WerknemerDTO> getGewoneWerknemers() {
+        List<Werknemer> werknemers = werknemerManager.getGewoneWerknemers();
+        return werknemers.stream().map(w ->
+                new WerknemerDTO(w.getId(), w.getVoornaam(), w.getAchternaam(), w.getJobTitel().name(), w.getTelefoon(), w.getGeboortedatum(),
+                        w.getLand(), w.getPostcode(), w.getStad(), w.getStraat(), w.getHuisnummer(), w.getBus(), w.getEmail(), w.getStatus())).toList();
+    }
+
+    public List<WerknemerDTO> getWerknemersFromTeam(int id) {
+        List<Werknemer> werknemers = werknemerManager.getWerknemersFromTeam(id);
+        return werknemers.stream().map(w ->
+                new WerknemerDTO(w.getId(), w.getVoornaam(), w.getAchternaam(), w.getJobTitel().name(), w.getTelefoon(), w.getGeboortedatum(),
+                        w.getLand(), w.getPostcode(), w.getStad(), w.getStraat(), w.getHuisnummer(), w.getBus(), w.getEmail(), w.getStatus())).toList();
     }
 
     public void wijzigWerknemer(Werknemer werknemer, String nieuweNaam, String nieuweJobTitel) {

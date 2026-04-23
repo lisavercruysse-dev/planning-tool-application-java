@@ -1,7 +1,6 @@
 package org.sdp.sdp.gui;
 
 import domein.WerknemerController;
-import domein.WerknemerManager;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
@@ -17,7 +16,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import lombok.Setter;
 
-import javax.imageio.IIOException;
 import java.io.IOException;
 
 public class GebruikersController extends VBox {

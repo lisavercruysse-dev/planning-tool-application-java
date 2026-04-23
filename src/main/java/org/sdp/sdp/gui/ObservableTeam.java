@@ -1,9 +1,17 @@
 package org.sdp.sdp.gui;
 
+import domein.SiteController;
 import domein.Team;
+import domein.TeamController;
+import domein.WerknemerController;
+import dto.SiteDTO;
+import dto.TeamDTO;
+import dto.WerknemerDTO;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Getter;
+
+import java.util.List;
 
 public class ObservableTeam {
     private final StringProperty naam;
@@ -12,14 +20,20 @@ public class ObservableTeam {
     private final StringProperty aantalWerknemers;
 
     @Getter
-    private final Team team;
+    private final TeamDTO team;
+    private final WerknemerDTO verantwoordelijkeDTO;
+    private final List<WerknemerDTO> werknemers;
+    private final SiteDTO siteDTO;
 
-    public ObservableTeam(Team team) {
+    public ObservableTeam(TeamDTO team, WerknemerController werknemerController, SiteController siteController) {
         this.team = team;
-        this.naam = new SimpleStringProperty(team.getNaam());
-        this.verantwoordelijke = new SimpleStringProperty(team.getVerantwoordelijke().getVoornaam() + " " + team.getVerantwoordelijke().getAchternaam());
-        this.site = new SimpleStringProperty(team.getSite().getName());
-        this.aantalWerknemers = new SimpleStringProperty(String.valueOf(team.getWerknemers().size()));
+        this.verantwoordelijkeDTO = werknemerController.getVerantwoordelijkeVanTeam(team.id());
+        this.werknemers = werknemerController.getWerknemersFromTeam(team.id());
+        this.siteDTO = siteController.getSiteFromTeam(team.id());
+        this.naam = new SimpleStringProperty(team.naam());
+        this.verantwoordelijke = new SimpleStringProperty(verantwoordelijkeDTO.voornaam() + " " + verantwoordelijkeDTO.achternaam());
+        this.site = new SimpleStringProperty(siteDTO.naam());
+        this.aantalWerknemers = new SimpleStringProperty(String.valueOf(werknemers.size()));
     }
 
     public StringProperty naamProperty() {return naam;}

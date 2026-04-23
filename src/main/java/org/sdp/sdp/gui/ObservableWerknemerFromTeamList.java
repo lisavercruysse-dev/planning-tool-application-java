@@ -1,11 +1,9 @@
 package org.sdp.sdp.gui;
 
-import domein.Team;
-import domein.Werknemer;
 import domein.WerknemerController;
+import dto.WerknemerDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import lombok.Getter;
 
 import java.util.List;
@@ -24,14 +22,14 @@ public class ObservableWerknemerFromTeamList {
         this.teamId = teamId;
         this.observableTeam = observableTeam;
 
-        List<Werknemer> werknemers = this.controller.getWerknemersFromTeam(teamId);
+        List<WerknemerDTO> werknemers = this.controller.getWerknemersFromTeam(teamId);
         if (werknemers != null) {
             werknemers.forEach(w -> observableList.add(new ObservableWerknemer(w)));
         }
     }
 
-    public ObservableWerknemer addWerknemer(Werknemer werknemer) {
-        Werknemer w = controller.voegWerknemerToeAanTeam(werknemer.getId(), teamId);
+    public ObservableWerknemer addWerknemer(WerknemerDTO werknemer) {
+        controller.voegWerknemerToeAanTeam(werknemer.id(), teamId);
         ObservableWerknemer ow = new ObservableWerknemer(werknemer);
         observableList.add(ow);
         observableTeam.aantalWerknemersProperty().set(String.valueOf(observableList.size()));
@@ -39,7 +37,7 @@ public class ObservableWerknemerFromTeamList {
     }
 
     public void verwijderWerknemerUitTeam(ObservableWerknemer observableWerknemer) {
-        controller.verwijderWerknemerUitTeam(observableWerknemer.getWerknemer().getId(), teamId);
+        controller.verwijderWerknemerUitTeam(observableWerknemer.getId(), teamId);
         observableList.remove(observableWerknemer);
         observableTeam.aantalWerknemersProperty().set(String.valueOf(observableList.size()));
     }

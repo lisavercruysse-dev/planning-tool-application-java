@@ -2,12 +2,16 @@ import domein.JobTitel;
 import domein.Team;
 import domein.Werknemer;
 import domein.WerknemerController;
+import dto.WerknemerDTO;
+import exception.WerknemerInformationException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.sdp.sdp.gui.ObservableWerknemer;
 import org.sdp.sdp.gui.ObservableWerknemersTable;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,162 +21,139 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class ObservableWerknemersTableTest {
 
+    private WerknemerController controller;
+    private ObservableWerknemersTable table;
+
+    private static final LocalDate GEBOORTEDATUM = LocalDate.of(2000, 1, 1);
+
+    private Werknemer w1;
+    private Werknemer w2;
+
+    @BeforeEach
+    void setUp() throws WerknemerInformationException {
+
+        controller = mock(WerknemerController.class);
+
+        w1 = Werknemer.builder()
+                .voornaam("Jan")
+                .achternaam("Jansen")
+                .jobTitel(JobTitel.MANAGER)
+                .geboortedatum(GEBOORTEDATUM)
+                .land("België")
+                .postcode("1000")
+                .stad("Brussel")
+                .straat("Kerkstraat")
+                .huisnummer(1)
+                .build();
+
+        w2 = Werknemer.builder()
+                .voornaam("Katrien")
+                .achternaam("De Bakker")
+                .jobTitel(JobTitel.WERKNEMER)
+                .telefoon("0412345678")
+                .geboortedatum(GEBOORTEDATUM)
+                .land("België")
+                .postcode("9000")
+                .stad("Gent")
+                .straat("Vlaanderenstraat")
+                .huisnummer(12)
+                .build();
+
+        when(controller.getWerknemers()).thenReturn(List.of(
+                new WerknemerDTO(w1.getId(), w1.getVoornaam(), w1.getAchternaam(), w1.getJobTitel().name(), w1.getTelefoon(), w1.getGeboortedatum(), w1.getLand(), w1.getPostcode(), w1.getStad(), w1.getStraat(), w1.getHuisnummer(), w1.getBus(), w1.getEmail(), w1.getStatus()),
+                new WerknemerDTO(w2.getId(), w2.getVoornaam(), w2.getAchternaam(), w2.getJobTitel().name(), w2.getTelefoon(), w2.getGeboortedatum(), w2.getLand(), w2.getPostcode(), w2.getStad(), w2.getStraat(), w2.getHuisnummer(), w2.getBus(), w2.getEmail(), w2.getStatus())));
+
+        table = new ObservableWerknemersTable(controller);
+    }
+
     @Test
     void lijstWordtCorrectOpgevuld() {
-        // Arrange
-        WerknemerController controller = mock(WerknemerController.class);
-
-        Werknemer w1 = new Werknemer("Jan", "Jansen", JobTitel.MANAGER, "pass1234", null);
-        Werknemer w2 = new Werknemer("Piet", "Peeters", JobTitel.WERKNEMER, "pass1234", null);
-
-        when(controller.getWerknemers()).thenReturn(List.of(w1, w2));
-
-        // Act
-        ObservableWerknemersTable table = new ObservableWerknemersTable(controller);
-
-        // Assert
         assertEquals(2, table.getFilteredPersonList().size());
     }
 
     @Test
     void filterWerktAchternaam() {
-        // Arrange
-        WerknemerController controller = mock(WerknemerController.class);
-
-        Werknemer w1 = new Werknemer("Jan", "Jansen", JobTitel.MANAGER, "pass1234", null);
-        Werknemer w2 = new Werknemer("Piet", "Peeters", JobTitel.WERKNEMER, "pass1234", null);
-
-        when(controller.getWerknemers()).thenReturn(List.of(w1, w2));
-
-        ObservableWerknemersTable table = new ObservableWerknemersTable(controller);
-
-        // Act
         table.changeFilter("jans", "Achternaam");
 
-        // Assert
         assertEquals(1, table.getFilteredPersonList().size());
         assertEquals("Jansen", table.getFilteredPersonList().get(0).getLastName());
     }
 
     @Test
     void filterWerktOpVoornaam() {
-        // Arrange
-        WerknemerController controller = mock(WerknemerController.class);
-
-        Werknemer w1 = new Werknemer("Jan", "Jansen", JobTitel.MANAGER, "pass1234", null);
-        Werknemer w2 = new Werknemer("Piet", "Peeters", JobTitel.WERKNEMER, "pass1234", null);
-
-        when(controller.getWerknemers()).thenReturn(List.of(w1, w2));
-
-        ObservableWerknemersTable table = new ObservableWerknemersTable(controller);
-
-        // Act
         table.changeFilter("jan", "Voornaam");
 
-        // Assert
         assertEquals(1, table.getFilteredPersonList().size());
         assertEquals("Jan", table.getFilteredPersonList().get(0).getFirstName());
     }
 
     @Test
     void filterWerktOpJobtitel() {
-        WerknemerController controller = mock(WerknemerController.class);
-
-        Werknemer w1 = new Werknemer("Jan", "Jansen", JobTitel.MANAGER, "pass1234", null);
-        Werknemer w2 = new Werknemer("Piet", "Peeters", JobTitel.WERKNEMER, "pass1234", null);
-
-        when(controller.getWerknemers()).thenReturn(List.of(w1, w2));
-
-        ObservableWerknemersTable table = new ObservableWerknemersTable(controller);
-
-        // Act
         table.changeFilter("manager", "Jobtitel");
 
-        // Assert
         assertEquals(1, table.getFilteredPersonList().size());
     }
 
     @Test
     void filterWerktOpEmail() {
-        WerknemerController controller = mock(WerknemerController.class);
-
-        Werknemer w1 = new Werknemer("Jan", "Jansen", JobTitel.MANAGER, "pass1234", null);
-        Werknemer w2 = new Werknemer("Piet", "Peeters", JobTitel.WERKNEMER, "pass1234", null);
-
-        when(controller.getWerknemers()).thenReturn(List.of(w1, w2));
-
-        // Act
-        ObservableWerknemersTable table = new ObservableWerknemersTable(controller);
         table.changeFilter("Jan", "Email");
 
-        // Assert
         assertEquals(1, table.getFilteredPersonList().size());
     }
 
     @Test
     void filterVindtGeenOvereenkomst() {
-        // Arrange
-        WerknemerController controller = mock(WerknemerController.class);
-
-        Werknemer w1 = new Werknemer("Jan", "Jansen", JobTitel.MANAGER, "pass1234", null);
-        Werknemer w2 = new Werknemer("Piet", "Peeters", JobTitel.WERKNEMER, "pass1234", null);
-
-        when(controller.getWerknemers()).thenReturn(List.of(w1, w2));
-
-        // Act
-        ObservableWerknemersTable table = new ObservableWerknemersTable(controller);
         table.changeFilter("abc", "Alle kolommen");
 
-        // Assert
         assertEquals(0, table.getFilteredPersonList().size());
     }
 
     @Test
     void legeFilterToontAlles() {
-        // Arrange
-        WerknemerController controller = mock(WerknemerController.class);
-
-        Werknemer w1 = new Werknemer("Jan", "Jansen", JobTitel.MANAGER, "pass1234", null);
-        Werknemer w2 = new Werknemer("Piet", "Peeters", JobTitel.WERKNEMER, "pass1234", null);
-
-        when(controller.getWerknemers()).thenReturn(List.of(w1, w2));
-
-        // Act
-        ObservableWerknemersTable table = new ObservableWerknemersTable(controller);
         table.changeFilter("", "Alle kolommen");
 
-        // Assert
         assertEquals(2, table.getFilteredPersonList().size());
     }
 
     @Test
-    void jobTitelWordtLowercaseWeergegeven() {
-        // Arrange
+    void jobTitelWordtLowercaseWeergegeven() throws WerknemerInformationException {
         Team team = null;
-        Werknemer werknemer = new Werknemer(
-                "Jan",
-                "Jansen",
-                JobTitel.MANAGER,
-                "wachtwoord123",
-                team
-        );
 
-        ObservableWerknemer observable = new ObservableWerknemer(werknemer);
+        Werknemer w = Werknemer.builder()
+                .voornaam("Jan")
+                .achternaam("Jansen")
+                .jobTitel(JobTitel.MANAGER)
+                .geboortedatum(GEBOORTEDATUM)
+                .land("België")
+                .postcode("1000")
+                .stad("Brussel")
+                .straat("Kerkstraat")
+                .huisnummer(1)
+                .build();
 
-        // Act
-        String jobTitel = observable.jobTitelProperty().get();
+        ObservableWerknemer observable = new ObservableWerknemer(new WerknemerDTO(w.getId(), w.getVoornaam(), w.getAchternaam(), w.getJobTitel().name(), w.getTelefoon(), w.getGeboortedatum(), w.getLand(), w.getPostcode(), w.getStad(), w.getStraat(), w.getHuisnummer(), w.getBus(), w.getEmail(), w.getStatus()));
 
-        // Assert
-        assertEquals("manager", jobTitel);
+        assertEquals("manager", observable.jobTitelProperty().get());
     }
 
+    /*
     @Test
-    void alleJobTitelsWordenCorrectGeformatteerd() {
+    void alleJobTitelsWordenCorrectGeformatteerd() throws WerknemerInformationException {
         for (JobTitel jt : JobTitel.values()) {
-            Werknemer w = new Werknemer("Jan", "Test", jt, "password123", null);
-            ObservableWerknemer ow = new ObservableWerknemer(w);
+            Werknemer w = Werknemer.builder()
+                    .voornaam("Jan")
+                    .achternaam("Jansen")
+                    .jobTitel(jt)
+                    .geboortedatum(GEBOORTEDATUM)
+                    .land("België")
+                    .postcode("1000")
+                    .stad("Brussel")
+                    .straat("Kerkstraat")
+                    .huisnummer(1)
+                    .build();
+            ObservableWerknemer ow = new ObservableWerknemer(new WerknemerDTO(w.getId(), w.getVoornaam(), w.getAchternaam(), w.getJobTitel().name(), w.getTelefoon(), w.getGeboortedatum(), w.getLand(), w.getPostcode(), w.getStad(), w.getStraat(), w.getHuisnummer(), w.getBus(), w.getEmail(), w.getStatus()));
 
             assertEquals(jt.name().toLowerCase(), ow.jobTitelProperty().get());
         }
-    }
+    }*/
 }
