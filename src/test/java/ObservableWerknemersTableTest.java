@@ -35,6 +35,26 @@ public class ObservableWerknemersTableTest {
     }
 
     @Test
+    void filterWerktAchternaam() {
+        // Arrange
+        WerknemerController controller = mock(WerknemerController.class);
+
+        Werknemer w1 = new Werknemer("Jan", "Jansen", JobTitel.MANAGER, "pass1234", null);
+        Werknemer w2 = new Werknemer("Piet", "Peeters", JobTitel.WERKNEMER, "pass1234", null);
+
+        when(controller.getWerknemers()).thenReturn(List.of(w1, w2));
+
+        ObservableWerknemersTable table = new ObservableWerknemersTable(controller);
+
+        // Act
+        table.changeFilter("jans", "Achternaam");
+
+        // Assert
+        assertEquals(1, table.getFilteredPersonList().size());
+        assertEquals("Jansen", table.getFilteredPersonList().get(0).getLastName());
+    }
+
+    @Test
     void filterWerktOpVoornaam() {
         // Arrange
         WerknemerController controller = mock(WerknemerController.class);
@@ -47,7 +67,7 @@ public class ObservableWerknemersTableTest {
         ObservableWerknemersTable table = new ObservableWerknemersTable(controller);
 
         // Act
-        table.changeFilter("jan");
+        table.changeFilter("jan", "Voornaam");
 
         // Assert
         assertEquals(1, table.getFilteredPersonList().size());
@@ -55,7 +75,7 @@ public class ObservableWerknemersTableTest {
     }
 
     @Test
-    void filterWerktOpJobTitel() {
+    void filterWerktOpJobtitel() {
         WerknemerController controller = mock(WerknemerController.class);
 
         Werknemer w1 = new Werknemer("Jan", "Jansen", JobTitel.MANAGER, "pass1234", null);
@@ -66,14 +86,14 @@ public class ObservableWerknemersTableTest {
         ObservableWerknemersTable table = new ObservableWerknemersTable(controller);
 
         // Act
-        table.changeFilter("manager");
+        table.changeFilter("manager", "Jobtitel");
 
         // Assert
         assertEquals(1, table.getFilteredPersonList().size());
     }
 
     @Test
-    void legeFilterToontAlles() {
+    void filterWerktOpEmail() {
         WerknemerController controller = mock(WerknemerController.class);
 
         Werknemer w1 = new Werknemer("Jan", "Jansen", JobTitel.MANAGER, "pass1234", null);
@@ -81,10 +101,45 @@ public class ObservableWerknemersTableTest {
 
         when(controller.getWerknemers()).thenReturn(List.of(w1, w2));
 
+        // Act
         ObservableWerknemersTable table = new ObservableWerknemersTable(controller);
+        table.changeFilter("Jan", "Email");
+
+        // Assert
+        assertEquals(1, table.getFilteredPersonList().size());
+    }
+
+    @Test
+    void filterVindtGeenOvereenkomst() {
+        // Arrange
+        WerknemerController controller = mock(WerknemerController.class);
+
+        Werknemer w1 = new Werknemer("Jan", "Jansen", JobTitel.MANAGER, "pass1234", null);
+        Werknemer w2 = new Werknemer("Piet", "Peeters", JobTitel.WERKNEMER, "pass1234", null);
+
+        when(controller.getWerknemers()).thenReturn(List.of(w1, w2));
 
         // Act
-        table.changeFilter("");
+        ObservableWerknemersTable table = new ObservableWerknemersTable(controller);
+        table.changeFilter("abc", "Alle kolommen");
+
+        // Assert
+        assertEquals(0, table.getFilteredPersonList().size());
+    }
+
+    @Test
+    void legeFilterToontAlles() {
+        // Arrange
+        WerknemerController controller = mock(WerknemerController.class);
+
+        Werknemer w1 = new Werknemer("Jan", "Jansen", JobTitel.MANAGER, "pass1234", null);
+        Werknemer w2 = new Werknemer("Piet", "Peeters", JobTitel.WERKNEMER, "pass1234", null);
+
+        when(controller.getWerknemers()).thenReturn(List.of(w1, w2));
+
+        // Act
+        ObservableWerknemersTable table = new ObservableWerknemersTable(controller);
+        table.changeFilter("", "Alle kolommen");
 
         // Assert
         assertEquals(2, table.getFilteredPersonList().size());
@@ -93,8 +148,7 @@ public class ObservableWerknemersTableTest {
     @Test
     void jobTitelWordtLowercaseWeergegeven() {
         // Arrange
-        Team team = null; // mag null volgens jouw constructor
-
+        Team team = null;
         Werknemer werknemer = new Werknemer(
                 "Jan",
                 "Jansen",

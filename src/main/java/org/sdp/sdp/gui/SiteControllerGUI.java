@@ -1,13 +1,16 @@
 package org.sdp.sdp.gui;
 
 import domein.SiteController;
+import javafx.collections.FXCollections;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import lombok.Setter;
 
@@ -15,6 +18,9 @@ import java.io.IOException;
 
 public class SiteControllerGUI extends VBox {
     private final MainController mainController;
+
+    @FXML
+    private ComboBox<String> cmbFilterKolom;
 
     @FXML
     private TextField txtFilter;
@@ -76,6 +82,14 @@ public class SiteControllerGUI extends VBox {
         operationeleStatusCol.setCellValueFactory(cellData -> cellData.getValue().operationeleStatusProperty());
         productieStatusCol.setCellValueFactory(cellData -> cellData.getValue().productieStatusProperty());
 
+        cmbFilterKolom.setItems(FXCollections.observableArrayList(
+                "Alle kolommen", "Naam", "Locatie", "Operationele Status", "Productie Status"
+        ));
+        cmbFilterKolom.setValue("Alle kolommen");
+
+        // Herfilter wanneer de keuze verandert
+        cmbFilterKolom.setOnAction(e -> filter(null));
+
         // SortedList in GUI
         SortedList<ObservableSite> sortedList =
                 new SortedList<>(observableSitesTable.getFilteredSiteList());
@@ -102,8 +116,10 @@ public class SiteControllerGUI extends VBox {
     }
 
     @FXML
-    private void filter() {
-        observableSitesTable.changeFilter(txtFilter.getText());
+    private void filter(KeyEvent event) {
+        String filterValue = txtFilter.getText();
+        String kolom = cmbFilterKolom.getValue();
+        observableSitesTable.changeFilter(filterValue, kolom);
     }
 
 
