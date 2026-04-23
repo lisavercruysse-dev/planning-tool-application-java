@@ -1,5 +1,6 @@
 package domein;
 
+import dto.TeamDTO;
 import repository.GenericDaoJpa;
 import repository.TeamDaoJpa;
 
@@ -13,19 +14,20 @@ public class TeamController {
         this.teamManager = new TeamManager(new TeamDaoJpa());
     }
 
-    public Team addTeam(Werknemer verantwoordelijke, String naam, Site site) {
-        return teamManager.addTeam(verantwoordelijke, naam, site);
-    }
+    public TeamDTO addTeam(Werknemer verantwoordelijke, String naam, Site site) {
+        Team team = teamManager.addTeam(verantwoordelijke, naam, site);
+        return new TeamDTO(team.getId(), team.getNaam());    }
 
-    public List<Team> getAllTeams(){
-        return teamManager.getAllTeams();
+    public List<TeamDTO> getAllTeams(){
+        List<Team> teams = teamManager.getAllTeams();
+        return teams.stream().map(t -> new TeamDTO(t.getId(), t.getNaam())).toList();
     }
 
     public Team getTeamByID(int id){
         return teamManager.getTeamById(id);
     }
 
-    public void deleteTeam(Team team) {
+    public void deleteTeam(TeamDTO team) {
         teamManager.deleteTeam(team);
     }
 }

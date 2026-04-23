@@ -15,4 +15,8 @@ public class SiteManager {
         List<Site> sites = siteRepo.findAll();
         return sites;
     }
+
+    public Site getSiteFromTeam(int teamId) {
+        return siteRepo.getSiteFromTeam(teamId);
+    }
 }

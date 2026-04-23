@@ -1,5 +1,6 @@
 package domein;
 
+import dto.SiteDTO;
 import repository.SiteDaoJpa;
 
 import java.util.List;
@@ -13,5 +14,10 @@ public class SiteController {
 
     public List<Site> getAllSites() {
         return siteManager.getAllSites();
+    }
+
+    public SiteDTO getSiteFromTeam(int teamId) {
+        Site site = siteManager.getSiteFromTeam(teamId);
+        return new SiteDTO(site.getId(), site.getName());
     }
 }

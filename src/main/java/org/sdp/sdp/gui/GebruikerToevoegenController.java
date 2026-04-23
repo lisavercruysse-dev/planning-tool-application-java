@@ -1,17 +1,17 @@
 package org.sdp.sdp.gui;
 
-import domein.*;
+import domein.JobTitel;
+import domein.Team;
+import domein.TeamController;
+import dto.TeamDTO;
+import dto.WerknemerInputDTO;
+import exception.WerknemerInformationException;
+import javafx.scene.control.*;
 import javafx.util.StringConverter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
 
-import java.util.Map;
-import java.util.Set;
+import java.time.LocalDate;
 
 public class GebruikerToevoegenController {
 
@@ -22,23 +22,34 @@ public class GebruikerToevoegenController {
     public TextField achternaam;
 
     @FXML
-    public PasswordField wachtwoord;
+    public TextField telefoon;
+
+    @FXML
+    public DatePicker geboortedatum;
 
     @FXML
     public ComboBox<String> jobTitelCombo;
 
     @FXML
-    public ComboBox<Team> teamCombo;
+    public ComboBox<TeamDTO> teamCombo;
 
     @FXML
-    public Label voornaamError;
+    public TextField land;
 
     @FXML
-    public Label achternaamError;
+    public TextField postcode;
 
     @FXML
-    public Label wachtwoordError;
+    public TextField stad;
 
+    @FXML
+    public TextField straat;
+
+    @FXML
+    public TextField huisnummer;
+
+    @FXML
+    public TextField bus;
 
     private final MainController mainController;
     private final ObservableWerknemersTable werknemersTable;
@@ -53,25 +64,21 @@ public class GebruikerToevoegenController {
     @FXML
     private void initialize() {
 
-        voornaamError.setText("");
-        achternaamError.setText("");
-        wachtwoordError.setText("");
-
         for (JobTitel jobTitel: JobTitel.values()) {
             jobTitelCombo.getItems().add(jobTitel.name().toLowerCase());
         }
         jobTitelCombo.getSelectionModel().selectFirst();
 
         teamCombo.getItems().addAll(teamController.getAllTeams());
-        teamCombo.setConverter(new StringConverter<Team>() {
+        teamCombo.setConverter(new StringConverter<TeamDTO>() {
 
             @Override
-            public String toString(Team team) {
-                return team == null ? "" : team.getNaam() + ": " + team.getSite().getName();
+            public String toString(TeamDTO team) {
+                return team == null ? "" : team.naam();
             }
 
             @Override
-            public Team fromString(String s) {
+            public TeamDTO fromString(String s) {
                 return null;
             }
         });
@@ -83,35 +90,33 @@ public class GebruikerToevoegenController {
 
     @FXML
     public void btnConfirmAction(ActionEvent actionEvent) {
-        voornaamError.setText("");
-        achternaamError.setText("");
-        wachtwoordError.setText("");
 
         String voornaam = this.voornaam.getText();
         String achternaam = this.achternaam.getText();
-        String wachtwoord = this.wachtwoord.getText();
-        String jobtitel = this.jobTitelCombo.getSelectionModel().getSelectedItem().toUpperCase();
+        JobTitel jobtitel = JobTitel.valueOf(this.jobTitelCombo.getSelectionModel().getSelectedItem().toUpperCase());
+        String telefoon = this.telefoon.getText();
+        LocalDate geboortedatum = this.geboortedatum.getValue();
+        String land = this.land.getText();
+        String postcode = this.postcode.getText();
+        String stad = this.stad.getText();
+        String straat = this.straat.getText();
+        Integer huisnummer = Integer.parseInt(this.huisnummer.getText());
+        Integer bus = Integer.parseInt(this.bus.getText());
         Team team = null;
 
-        Set<String> errors = Werknemer.validate(voornaam, achternaam, jobtitel, wachtwoord);
+        try {
+            werknemersTable.addWerknemer(new WerknemerInputDTO(voornaam, achternaam, jobtitel, telefoon, geboortedatum, land, postcode, stad, straat, huisnummer, bus, team));
 
-        Map<Label, String> errorMap = Map.of(
-                voornaamError, "Voornaam",
-                achternaamError, "Achternaam",
-                wachtwoordError, "Wachtwoord"
-        );
-
-        errorMap.forEach((label, keyword) ->
-                label.setText(errors.stream()
-                        .filter(e -> e.contains(keyword))
-                        .findFirst()
-                        .orElse(""))
-        );
-
-        if (!errors.isEmpty()) return;
-
-        werknemersTable.addWerknemer(voornaam, achternaam, jobtitel, wachtwoord, team);
+        } catch (WerknemerInformationException ex) {
+            printExceptions(ex);
+        }
 
         mainController.closePopup();
+    }
+
+    private void printExceptions(WerknemerInformationException ex) {
+        System.out.println("WerknemerInformationException: " + ex.getMessage());
+        ex.getInformationRequired().forEach((e, m) -> System.out.println(m));
+        System.out.println();
     }
 }

@@ -1,9 +1,7 @@
 package org.sdp.sdp.gui;
 
-import domein.Site;
-import domein.Team;
-import domein.Werknemer;
-import domein.TeamController;
+import domein.*;
+import dto.TeamDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -13,17 +11,21 @@ import java.util.List;
 
 public class ObservableTeamsTable {
     private final TeamController teamController;
+    private final WerknemerController werknemerController;
+    private final SiteController siteController;
     private final ObservableList<ObservableTeam> observableTeamList;
     @Getter
     private final FilteredList<ObservableTeam> filteredTeams;
 
-    public ObservableTeamsTable(TeamController teamController) {
+    public ObservableTeamsTable(TeamController teamController, WerknemerController werknemerController, SiteController siteController) {
         this.teamController = teamController;
+        this.werknemerController = werknemerController;
+        this.siteController = siteController;
         this.observableTeamList = FXCollections.observableArrayList();
 
-        List<Team> teams = this.teamController.getAllTeams();
+        List<TeamDTO> teams = this.teamController.getAllTeams();
         if (teams != null) {
-            teams.forEach(t -> observableTeamList.add(new ObservableTeam(t)));
+            teams.forEach(t -> observableTeamList.add(new ObservableTeam(t, werknemerController, siteController)));
         }
         this.filteredTeams = new FilteredList<>(observableTeamList, t -> true);
     }
@@ -39,8 +41,8 @@ public class ObservableTeamsTable {
     }
 
     public ObservableTeam addTeam(Werknemer verantwoordelijke, String naam, Site site) {
-        Team t = teamController.addTeam(verantwoordelijke, naam, site);
-        ObservableTeam ot = new ObservableTeam(t);
+        TeamDTO t = teamController.addTeam(verantwoordelijke, naam, site);
+        ObservableTeam ot = new ObservableTeam(t, werknemerController, siteController);
         observableTeamList.add(ot);
         return ot;
     }

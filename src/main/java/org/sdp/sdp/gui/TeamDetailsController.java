@@ -1,7 +1,8 @@
 package org.sdp.sdp.gui;
 
-import domein.Team;
 import domein.WerknemerController;
+import dto.TeamDTO;
+import dto.WerknemerDTO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,7 +18,8 @@ public class TeamDetailsController extends VBox {
     private final ObservableWerknemerFromTeamList werknemersList;
     private final WerknemerController werknemerController;
     @Getter
-    private final Team team;
+    private final TeamDTO team;
+    private final WerknemerDTO verantwoordelijkeDTO;
 
     @FXML
     private ListView<ObservableWerknemer> listWerknemers;
@@ -28,14 +30,12 @@ public class TeamDetailsController extends VBox {
     @FXML
     private Label verantwoordelijke;
 
-    @FXML
-    private Label site;
-
     public TeamDetailsController(MainController mainController, ObservableTeam team){
         this.mainController = mainController;
         this.team = team.getTeam();
         this.werknemerController = new WerknemerController();
-        this.werknemersList = new ObservableWerknemerFromTeamList(werknemerController, team.getTeam().getId(), team);
+        this.verantwoordelijkeDTO = werknemerController.getVerantwoordelijkeVanTeam(this.team.id());
+        this.werknemersList = new ObservableWerknemerFromTeamList(werknemerController, team.getTeam().id(), team);
     }
 
     @FXML
@@ -55,9 +55,8 @@ public class TeamDetailsController extends VBox {
             }
         });
 
-        teamName.setText(team.getNaam());
-        verantwoordelijke.setText(team.getVerantwoordelijke().getVoornaam() + " " + team.getVerantwoordelijke().getAchternaam());
-        site.setText(team.getSite().getName());
+        teamName.setText(team.naam());
+        verantwoordelijke.setText(verantwoordelijkeDTO.voornaam() + " " + verantwoordelijkeDTO.achternaam());
 
     }
 

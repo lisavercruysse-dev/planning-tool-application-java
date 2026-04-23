@@ -1,5 +1,6 @@
 package domein;
 
+import dto.TeamDTO;
 import repository.GenericDao;
 import repository.TeamDao;
 
@@ -8,7 +9,7 @@ import java.util.Set;
 
 public class TeamManager {
 
-    private GenericDao<Team> teamRepository;
+    private final TeamDao teamRepository;
 
     public TeamManager(TeamDao teamRepository) {this.teamRepository = teamRepository;}
 
@@ -47,7 +48,8 @@ public class TeamManager {
         return this.teamRepository.get(id);
     }
 
-    public void deleteTeam(Team team) {
+    public void deleteTeam(TeamDTO dto) {
+        Team team = teamRepository.get(dto.id());
         if (team == null) {
             throw new IllegalArgumentException("Er is geen team geselecteerd.");
         }

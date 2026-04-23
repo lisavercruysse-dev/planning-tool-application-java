@@ -1,4 +1,6 @@
 import domein.*;
+import dto.TeamDTO;
+import exception.WerknemerInformationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,8 +14,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import repository.GenericDao;
 import repository.TeamDao;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,8 +34,24 @@ public class TeamTest {
     @InjectMocks
     private TeamManager teamManager;
 
-    private static final Werknemer VERANTWOORDELIJKE = new Werknemer("Bart", "De Smedt", JobTitel.VERANTWOORDELIJKE, "12345678", null);
+    private static Werknemer VERANTWOORDELIJKE;
+    private static LocalDate GEBOORTEDATUM = LocalDate.of(2000, 1, 1);
     private static final Site SITE = new Site("Site noord", "Gent", 100, "actief", "gezond");
+
+    @BeforeEach
+    public void setUp() throws WerknemerInformationException {
+        VERANTWOORDELIJKE = Werknemer.builder()
+                .voornaam("Bart")
+                .achternaam("De Smedt")
+                .jobTitel(JobTitel.VERANTWOORDELIJKE)
+                .geboortedatum(GEBOORTEDATUM)
+                .land("België")
+                .postcode("9000")
+                .stad("Gent")
+                .straat("Vlaanderenstraat")
+                .huisnummer(12)
+                .build();
+    }
 
     private static Stream<Arguments> correcteWaardenToevoegenTeam() {
         return Stream.of(
@@ -68,7 +88,7 @@ public class TeamTest {
         verify(teamRepository).insert(team);
         verify(teamRepository).commitTransaction();
 
-        assertEquals(VERANTWOORDELIJKE, team.getVerantwoordelijke());
+        assertEquals(verantwoordelijke, team.getVerantwoordelijke());
         assertEquals(SITE, team.getSite());
     }
 
@@ -84,7 +104,7 @@ public class TeamTest {
     @MethodSource("bestaandTeamWaarden")
     public void addTeamBestaatAlTest(Werknemer verantwoordelijke, String naam, Site site) {
         Team bestaandTeam = new Team(VERANTWOORDELIJKE, "Team A", site);
-        Mockito.when(teamRepository.findAll()).thenReturn(List.of(bestaandTeam));
+        Mockito.lenient().when(teamRepository.findAll()).thenReturn(List.of(bestaandTeam));
 
         assertThrows(IllegalArgumentException.class, () -> {
             teamManager.addTeam(verantwoordelijke, naam, site);
@@ -103,17 +123,33 @@ public class TeamTest {
     public void deleteTeamSuccesTest() {
         Team team = new Team(VERANTWOORDELIJKE, "Leeg Team", SITE);
         team.getWerknemers().clear();
+        TeamDTO dto = new TeamDTO(1, team.getNaam());
 
-        assertDoesNotThrow(() -> teamManager.deleteTeam(team));
+        Mockito.when(teamRepository.get(any())).thenReturn(team);
+
+        assertDoesNotThrow(() -> teamManager.deleteTeam(dto));
     }
 
     @Test
-    public void deleteTeamMetLedenGooitExceptionTest() {
+    public void deleteTeamMetLedenGooitExceptionTest() throws WerknemerInformationException{
         Team team = new Team(VERANTWOORDELIJKE, "Team met Leden", SITE);
-        Werknemer w1 = new Werknemer("Jan", "Janssens", JobTitel.WERKNEMER, "123", null);
-        team.getWerknemers().add(w1);
+        Werknemer w = Werknemer.builder()
+                .voornaam("Pieter")
+                .achternaam("Willems")
+                .jobTitel(JobTitel.WERKNEMER)
+                .telefoon("0412345678")
+                .geboortedatum(GEBOORTEDATUM)
+                .land("België")
+                .postcode("9000")
+                .stad("Gent")
+                .straat("Vlaanderenstraat")
+                .huisnummer(12)
+                .build();
+        team.getWerknemers().add(w);
 
-        assertThrows(IllegalArgumentException.class, () -> teamManager.deleteTeam(team));
+        TeamDTO dto = new TeamDTO(team.getId(), team.getNaam());
+
+        assertThrows(IllegalArgumentException.class, () -> teamManager.deleteTeam(dto));
     }
 
     @Test
@@ -122,7 +158,10 @@ public class TeamTest {
         team.getWerknemers().clear();
 
         doThrow(new RuntimeException()).when(teamRepository).delete(any());
+        Mockito.when(teamRepository.get(any())).thenReturn(team);
 
-        assertThrows(RuntimeException.class, () -> teamManager.deleteTeam(team));
+        TeamDTO dto = new TeamDTO(1, team.getNaam());
+
+        assertThrows(RuntimeException.class, () -> teamManager.deleteTeam(dto));
     }
 }

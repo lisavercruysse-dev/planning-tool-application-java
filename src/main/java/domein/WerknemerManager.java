@@ -1,11 +1,11 @@
 package domein;
 
+import dto.WerknemerInputDTO;
+import exception.WerknemerInformationException;
 import repository.GebruikerDao;
-import repository.GenericDao;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 public class WerknemerManager {
 
@@ -16,13 +16,20 @@ public class WerknemerManager {
         werknemerRepo = werknemerDao;
     }
 
-    public Werknemer addWerknemer(String voornaam, String achternaam, String jobtitel, String wachtwoord, Team team) {
-        Set<String> errors = Werknemer.validate(voornaam, achternaam, jobtitel, wachtwoord);
-        if (!errors.isEmpty()) {
-            throw new IllegalArgumentException(String.join("\n", errors));
-        }
-
-        Werknemer w = new Werknemer(voornaam, achternaam, JobTitel.valueOf(jobtitel.toUpperCase()), wachtwoord, team);
+    public Werknemer addWerknemer(WerknemerInputDTO werknemerInputDTO) throws WerknemerInformationException {
+            Werknemer w = Werknemer.builder()
+                    .voornaam(werknemerInputDTO.voornaam())
+                    .achternaam(werknemerInputDTO.achternaam())
+                    .jobTitel(werknemerInputDTO.jobTitel())
+                    .telefoon(werknemerInputDTO.telefoon())
+                    .geboortedatum(werknemerInputDTO.geboortedatum())
+                    .land(werknemerInputDTO.land())
+                    .postcode(werknemerInputDTO.postcode())
+                    .stad(werknemerInputDTO.stad())
+                    .straat(werknemerInputDTO.straat())
+                    .huisnummer(werknemerInputDTO.huisnummer())
+                    .bus(werknemerInputDTO.bus())
+                    .team(werknemerInputDTO.team()).build();
 
         werknemerRepo.startTransaction();
         try {
@@ -34,9 +41,14 @@ public class WerknemerManager {
         }
         return w;
     }
+
       public List<Werknemer> getWerknemerList() {
         List<Werknemer> result = werknemerRepo.findAll();
         return result != null ? result : Collections.emptyList();
+    }
+
+    public Werknemer getVerantwoordelijkeVanTeam(int teamId) {
+        return werknemerRepo.getVerantwoordelijkeVoorTeam(teamId);
     }
 
     public void wijzigWerknemer(Werknemer werknemer, String nieuweNaam, String nieuweJobtitel) {

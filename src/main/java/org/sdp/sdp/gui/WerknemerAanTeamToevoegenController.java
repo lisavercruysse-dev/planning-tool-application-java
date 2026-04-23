@@ -1,9 +1,8 @@
 package org.sdp.sdp.gui;
 
-import domein.Team;
-import domein.Werknemer;
 import domein.WerknemerController;
-import javafx.collections.FXCollections;
+import dto.TeamDTO;
+import dto.WerknemerDTO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,10 +18,10 @@ public class WerknemerAanTeamToevoegenController {
     private final WerknemerController werknemerController;
     private final TeamDetailsController detailsController;
     private final ObservableWerknemerFromTeamList werknemersList;
-    private final Team team;
+    private final TeamDTO team;
 
     @FXML
-    private ComboBox<Werknemer> werknemers;
+    private ComboBox<WerknemerDTO> werknemers;
 
     @FXML
     private Label werknemerError;
@@ -39,18 +38,18 @@ public class WerknemerAanTeamToevoegenController {
     private void initialize() {
         werknemerError.setText("");
 
-        List<Werknemer> werknemersAlInTeam = team.getWerknemers();
+        List<WerknemerDTO> werknemersAlInTeam = werknemerController.getWerknemersFromTeam(team.id());
 
         werknemers.getItems().addAll(werknemerController.getGewoneWerknemers()
-                .stream().filter(w -> !team.getWerknemers().contains(w)).toList());
-        werknemers.setConverter(new StringConverter<Werknemer>() {
+                .stream().filter(w -> !werknemersAlInTeam.contains(w)).toList());
+        werknemers.setConverter(new StringConverter<WerknemerDTO>() {
             @Override
-            public String toString(Werknemer werknemer) {
-                return werknemer == null ? "" : werknemer.getVoornaam() + " " + werknemer.getAchternaam();
+            public String toString(WerknemerDTO werknemer) {
+                return werknemer == null ? "" : werknemer.voornaam() + " " + werknemer.achternaam();
             }
 
             @Override
-            public Werknemer fromString(String s) {
+            public WerknemerDTO fromString(String s) {
                 return null;
             }
         });
