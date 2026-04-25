@@ -15,37 +15,35 @@ public class WerknemerController {
         this.werknemerManager = new WerknemerManager(new GebruikerDaoJpa());
     }
 
+    private WerknemerDTO toDTO(Werknemer w) {
+        return new WerknemerDTO(w.getId(), w.getVoornaam(), w.getAchternaam(), w.getJobTitel().name(),
+                w.getTelefoon(), w.getGeboortedatum(), w.getLand(), w.getPostcode(), w.getStad(),
+                w.getStraat(), w.getHuisnummer(), w.getBus(), w.getEmail(), w.getStatus());
+    }
+
     public WerknemerDTO addWerknemer(WerknemerInputDTO werknemerInputDTO) throws WerknemerInformationException {
         Werknemer w = werknemerManager.addWerknemer(werknemerInputDTO);
-        return new WerknemerDTO(w.getId(), w.getVoornaam(), w.getAchternaam(), w.getJobTitel().name(), w.getTelefoon(), w.getGeboortedatum(),
-                w.getLand(), w.getPostcode(), w.getStad(), w.getStraat(), w.getHuisnummer(), w.getBus(), w.getEmail(), w.getStatus());
+        return toDTO(w);
      }
   
     public List<WerknemerDTO> getWerknemers() {
         List<Werknemer> werknemers = werknemerManager.getWerknemerList();
-        return werknemers.stream().map(w ->
-                new WerknemerDTO(w.getId(), w.getVoornaam(), w.getAchternaam(), w.getJobTitel().name(), w.getTelefoon(), w.getGeboortedatum(),
-                w.getLand(), w.getPostcode(), w.getStad(), w.getStraat(), w.getHuisnummer(), w.getBus(), w.getEmail(), w.getStatus())).toList();
+        return werknemers.stream().map(this::toDTO).toList();
     }
 
     public WerknemerDTO getVerantwoordelijkeVanTeam(int teamId) {
         Werknemer w = werknemerManager.getVerantwoordelijkeVanTeam(teamId);
-        return new WerknemerDTO(w.getId(), w.getVoornaam(), w.getAchternaam(), w.getJobTitel().name(), w.getTelefoon(), w.getGeboortedatum(),
-                w.getLand(), w.getPostcode(), w.getStad(), w.getStraat(), w.getHuisnummer(), w.getBus(), w.getEmail(), w.getStatus());
+        return toDTO(w);
     }
 
     public List<WerknemerDTO> getGewoneWerknemers() {
         List<Werknemer> werknemers = werknemerManager.getGewoneWerknemers();
-        return werknemers.stream().map(w ->
-                new WerknemerDTO(w.getId(), w.getVoornaam(), w.getAchternaam(), w.getJobTitel().name(), w.getTelefoon(), w.getGeboortedatum(),
-                        w.getLand(), w.getPostcode(), w.getStad(), w.getStraat(), w.getHuisnummer(), w.getBus(), w.getEmail(), w.getStatus())).toList();
+        return werknemers.stream().map(this::toDTO).toList();
     }
 
     public List<WerknemerDTO> getWerknemersFromTeam(int id) {
         List<Werknemer> werknemers = werknemerManager.getWerknemersFromTeam(id);
-        return werknemers.stream().map(w ->
-                new WerknemerDTO(w.getId(), w.getVoornaam(), w.getAchternaam(), w.getJobTitel().name(), w.getTelefoon(), w.getGeboortedatum(),
-                        w.getLand(), w.getPostcode(), w.getStad(), w.getStraat(), w.getHuisnummer(), w.getBus(), w.getEmail(), w.getStatus())).toList();
+        return werknemers.stream().map(this::toDTO).toList();
     }
 
     public void wijzigWerknemer(Werknemer werknemer, String nieuweNaam, String nieuweJobTitel) {

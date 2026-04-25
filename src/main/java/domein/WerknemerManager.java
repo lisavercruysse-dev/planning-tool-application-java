@@ -28,8 +28,7 @@ public class WerknemerManager {
                     .stad(werknemerInputDTO.stad())
                     .straat(werknemerInputDTO.straat())
                     .huisnummer(werknemerInputDTO.huisnummer())
-                    .bus(werknemerInputDTO.bus())
-                    .team(werknemerInputDTO.team()).build();
+                    .bus(werknemerInputDTO.bus()).build();
 
         werknemerRepo.startTransaction();
         try {
