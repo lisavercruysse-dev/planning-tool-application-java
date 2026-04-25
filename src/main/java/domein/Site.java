@@ -29,11 +29,13 @@ public class Site {
     @Column(name="capaciteit")
     private int capaciteit;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="operationeleStatus")
-    private String operationeleStatus;
+    private OperationeleStatus operationeleStatus;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "productieStatus")
-    private String productieStatus;
+    private ProductieStatus productieStatus;
 
     @OneToMany(mappedBy = "site")
     private List<Team> teams;
@@ -56,8 +58,8 @@ public class Site {
         private String name;
         private String locatie;
         private int capaciteit;
-        private String operationeleStatus;
-        private String productieStatus;
+        private OperationeleStatus operationeleStatus;
+        private ProductieStatus productieStatus;
 
         public Builder name(String name){
             this.name = name;
@@ -74,12 +76,12 @@ public class Site {
             return this;
         }
 
-        public Builder operationeleStatus(String operationeleStatus){
+        public Builder operationeleStatus(OperationeleStatus operationeleStatus){
             this.operationeleStatus = operationeleStatus;
             return this;
         }
 
-        public Builder productieStatus(String productieStatus){
+        public Builder productieStatus(ProductieStatus productieStatus){
             this.productieStatus = productieStatus;
             return this;
         }
@@ -90,12 +92,12 @@ public class Site {
         }
     }
 
-    /*
-    public Site(String name, String locatie, int capaciteit, String operationeleStatus, String productieStatus) {
+
+    public Site(String name, String locatie, int capaciteit, OperationeleStatus operationeleStatus, ProductieStatus productieStatus) {
         this.name = name;
         this.locatie = locatie;
         this.capaciteit = capaciteit;
         this.operationeleStatus = operationeleStatus;
         this.productieStatus = productieStatus;
-    } */
+    }
 }

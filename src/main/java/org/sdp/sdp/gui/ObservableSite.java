@@ -16,9 +16,6 @@ public class ObservableSite {
     private final StringProperty operationeleStatus;
     private final StringProperty productieStatus;
 
-    /*@Getter
-    private final Site site; // koppeling naar domein */
-
     public ObservableSite(SiteDTO site) {
         id = site.id();
         this.name = new SimpleStringProperty(site.name());
@@ -26,9 +23,6 @@ public class ObservableSite {
         this.capaciteit = new SimpleStringProperty(String.valueOf(site.capaciteit()));
         this.operationeleStatus = new SimpleStringProperty(site.operationeleStatus());
         this.productieStatus = new SimpleStringProperty(site.productieStatus());
-
-        // wijzigingen in GUI doorgeven aan domein
-        // this.name.addListener((obs, oldVal, newVal) -> site.setName(newVal));
     }
 
     public StringProperty nameProperty() { return name; }

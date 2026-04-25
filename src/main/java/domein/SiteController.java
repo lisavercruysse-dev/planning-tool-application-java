@@ -19,14 +19,26 @@ public class SiteController {
     public List<SiteDTO> getAllSites() {
         List<Site> sites = siteManager.getAllSites();
         return sites.stream()
-                    .map(site ->
-                        new SiteDTO(site.getId(), site.getName(), site.getLocatie(), site.getCapaciteit(),
-                        site.getOperationeleStatus(), site.getProductieStatus()))
+                    .map(site -> new SiteDTO(
+                            site.getId(),
+                            site.getName(),
+                            site.getLocatie(),
+                            site.getCapaciteit(),
+                            site.getOperationeleStatus() != null ? site.getOperationeleStatus().name() : OperationeleStatus.INACTIEF.name(),
+                            site.getProductieStatus() != null ? site.getProductieStatus().name() : ProductieStatus.OFFLINE.name()
+                    ))
                     .toList();
     }
 
     public SiteDTO getSiteFromTeam(int teamId) {
         Site site = siteManager.getSiteFromTeam(teamId);
-        return new SiteDTO(site.getId(), site.getName(), site.getLocatie(), site.getCapaciteit(), site.getOperationeleStatus(), site.getProductieStatus());
+        return new SiteDTO(
+                site.getId(),
+                site.getName(),
+                site.getLocatie(),
+                site.getCapaciteit(),
+                site.getOperationeleStatus() != null ? site.getOperationeleStatus().name() : OperationeleStatus.INACTIEF.name(),
+                site.getProductieStatus() != null ? site.getProductieStatus().name() : ProductieStatus.OFFLINE.name()
+        );
     }
 }

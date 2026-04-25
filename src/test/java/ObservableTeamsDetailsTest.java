@@ -30,7 +30,7 @@ public class ObservableTeamsDetailsTest {
     private ObservableTeam observableTeam;
     private static final LocalDate GEBOORTEDATUM = LocalDate.of(2000, 1, 1);
     private static Werknemer VERANTWOORDELIJKE;
-    private static final Site SITE = new Site("Site noord", "Gent", 100, "actief", "gezond");
+    private static final Site SITE = new Site("Site noord", "Gent", 100, OperationeleStatus.ACTIEF, ProductieStatus.GEZOND);
     private ObservableWerknemerFromTeamList list;
     private Team team;
 
@@ -83,7 +83,7 @@ public class ObservableTeamsDetailsTest {
                 .thenReturn(new WerknemerDTO(VERANTWOORDELIJKE.getId(), VERANTWOORDELIJKE.getVoornaam(), VERANTWOORDELIJKE.getAchternaam(), VERANTWOORDELIJKE.getJobTitel().name(), VERANTWOORDELIJKE.getTelefoon(), VERANTWOORDELIJKE.getGeboortedatum(), VERANTWOORDELIJKE.getLand(), VERANTWOORDELIJKE.getPostcode(), VERANTWOORDELIJKE.getStad(), VERANTWOORDELIJKE.getStraat(), VERANTWOORDELIJKE.getHuisnummer(), VERANTWOORDELIJKE.getBus(), VERANTWOORDELIJKE.getEmail(), VERANTWOORDELIJKE.getStatus()));
 
         Mockito.when(siteController.getSiteFromTeam(team.getId()))
-                .thenReturn(new SiteDTO(SITE.getId(), SITE.getName()));
+                .thenReturn(new SiteDTO(SITE.getId(), SITE.getName(), SITE.getLocatie(), SITE.getCapaciteit(), SITE.getOperationeleStatus().name(), SITE.getProductieStatus().name()));
 
         Mockito.when(werknemerController.getWerknemersFromTeam(team.getId()))
                 .thenReturn(List.of(

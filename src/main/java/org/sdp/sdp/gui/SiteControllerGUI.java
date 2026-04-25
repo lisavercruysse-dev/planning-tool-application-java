@@ -71,7 +71,43 @@ public class SiteControllerGUI extends VBox {
         locatieCol.setCellValueFactory(cellData -> cellData.getValue().locatieProperty());
         capaciteitCol.setCellValueFactory(cellData -> cellData.getValue().capaciteitProperty());
         operationeleStatusCol.setCellValueFactory(cellData -> cellData.getValue().operationeleStatusProperty());
+        operationeleStatusCol.setCellFactory(col -> new TableCell<ObservableSite, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item.substring(0,1).toUpperCase() + item.substring(1).toLowerCase());
+                    switch (item.toUpperCase()) {
+                        case "ACTIEF"   -> setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                        case "INACTIEF" -> setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                        default         -> setStyle("");
+                    }
+                }
+            }
+        });
+
         productieStatusCol.setCellValueFactory(cellData -> cellData.getValue().productieStatusProperty());
+        productieStatusCol.setCellFactory(col -> new TableCell<ObservableSite, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item.substring(0,1).toUpperCase() + item.substring(1).toLowerCase());
+                    switch (item.toUpperCase()) {
+                        case "GEZOND"   -> setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                        case "PROBLEMEN"-> setStyle("-fx-text-fill: orange; -fx-font-weight: bold;");
+                        case "OFFLINE"  -> setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                        default         -> setStyle("");
+                    }
+                }
+            }
+        });
 
         setupColumnFilter(nameCol, "Naam");
         setupColumnFilter(locatieCol, "Locatie");

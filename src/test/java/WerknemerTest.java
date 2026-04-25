@@ -49,7 +49,7 @@ public class WerknemerTest {
                 .huisnummer(12)
                 .build();
 
-        SITE = new Site("Site noord", "Gent", 100, "actief", "gezond");
+        SITE = new Site("Site noord", "Gent", 100, OperationeleStatus.ACTIEF, ProductieStatus.GEZOND);
         TEAM = new Team(VERANTWOORDELIJKE, "Team A", SITE);
     }
 

@@ -36,7 +36,7 @@ public class TeamTest {
 
     private static Werknemer VERANTWOORDELIJKE;
     private static LocalDate GEBOORTEDATUM = LocalDate.of(2000, 1, 1);
-    private static final Site SITE = new Site("Site noord", "Gent", 100, "actief", "gezond");
+    private static final Site SITE = new Site("Site noord", "Gent", 100, OperationeleStatus.ACTIEF, ProductieStatus.GEZOND);
 
     @BeforeEach
     public void setUp() throws WerknemerInformationException {

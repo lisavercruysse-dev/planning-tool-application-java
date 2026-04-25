@@ -29,7 +29,7 @@ public class ObservableTeamsTableTest {
 
     private static Werknemer VERANTWOORDELIJKE;
     private static final LocalDate GEBOORTEDATUM = LocalDate.of(2000, 1, 1);
-    private static final Site SITE = new Site("Site noord", "Gent", 100, "actief", "gezond");
+    private static final Site SITE = new Site("Site noord", "Gent", 100, OperationeleStatus.ACTIEF, ProductieStatus.GEZOND);
     private ObservableTeamsTable observableTeamsTable;
 
     @BeforeEach
@@ -55,7 +55,7 @@ public class ObservableTeamsTableTest {
 
         WerknemerDTO wDTO = new WerknemerDTO(1, "Bart", "De Smedt", JobTitel.WERKNEMER.name(), "0123456789", GEBOORTEDATUM,
                 "België", "9000", "Gent", "Straat", 1, 1, "Bart.DeSmedt@example.com", "actief");
-        SiteDTO sDTO = new SiteDTO(1, "Site Noord");
+        SiteDTO sDTO = new SiteDTO(1, "Site Noord", "Gent", 100, "Actief", "Gezond");
         Mockito.when(werknemerController.getVerantwoordelijkeVanTeam(Mockito.anyInt()))
                 .thenReturn(wDTO);
 
