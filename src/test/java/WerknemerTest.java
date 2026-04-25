@@ -121,7 +121,7 @@ public class WerknemerTest {
     @MethodSource("correcteWaardenToevoegenWerknemer")
     public void addWerknemerTest(String voornaam, String achternaam, JobTitel jobTitel,
                                  String telefoon, Integer huisnummer, Integer bus, Team team) throws WerknemerInformationException{
-        WerknemerInputDTO dto = new WerknemerInputDTO(voornaam, achternaam, jobTitel, telefoon, GEBOORTEDATUM, "België", "9000", "Gent", "Vlaanderenstraat", huisnummer, bus, team);
+        WerknemerInputDTO dto = new WerknemerInputDTO(voornaam, achternaam, jobTitel, telefoon, GEBOORTEDATUM, "België", "9000", "Gent", "Vlaanderenstraat", huisnummer, bus);
         Werknemer werknemer = werknemerManager.addWerknemer(dto);
 
         verify(werknemerRepo).startTransaction();
@@ -137,14 +137,14 @@ public class WerknemerTest {
     public void addWerknemerFoutTest(String voornaam, String achternaam, JobTitel jobTitel,
                                      String telefoon, String land, String postcode,
                                      String stad, String straat, Integer huisnummer, Integer bus) {
-        WerknemerInputDTO dto = new WerknemerInputDTO(voornaam, achternaam, jobTitel, telefoon, GEBOORTEDATUM, land, postcode, stad, straat, huisnummer, bus, TEAM);
+        WerknemerInputDTO dto = new WerknemerInputDTO(voornaam, achternaam, jobTitel, telefoon, GEBOORTEDATUM, land, postcode, stad, straat, huisnummer, bus);
         assertThrows(WerknemerInformationException.class, () -> werknemerManager.addWerknemer(dto));
     }
 
     @Test
     public void addTeamRollbackBijFoutTest() {
         doThrow(new RuntimeException()).when(werknemerRepo).insert(any());
-        WerknemerInputDTO dto = new WerknemerInputDTO("Thomas", "De Bakker", JobTitel.WERKNEMER, "0412345678", GEBOORTEDATUM, "België", "9000", "Gent", "Vlaanderenstraat", 12, 1, TEAM);
+        WerknemerInputDTO dto = new WerknemerInputDTO("Thomas", "De Bakker", JobTitel.WERKNEMER, "0412345678", GEBOORTEDATUM, "België", "9000", "Gent", "Vlaanderenstraat", 12, 1);
         assertThrows(RuntimeException.class, () -> werknemerManager.addWerknemer(dto));
         verify(werknemerRepo).rollbackTransaction();
     }

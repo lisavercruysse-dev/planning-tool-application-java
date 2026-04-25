@@ -16,6 +16,5 @@ public record WerknemerInputDTO(
         String stad,
         String straat,
         Integer huisnummer,
-        Integer bus,
-        Team team
+        Integer bus
 ) {}
