@@ -68,51 +68,51 @@ public class ObservableWerknemersTableTest {
 
     @Test
     void lijstWordtCorrectOpgevuld() {
-        assertEquals(2, table.getFilteredPersonList().size());
+        assertEquals(2, table.getFilteredList().size());
     }
 
     @Test
     void filterWerktAchternaam() {
-        table.changeFilter("jans", "Achternaam");
+        table.changeFilter("jans", "", "", "");
 
-        assertEquals(1, table.getFilteredPersonList().size());
-        assertEquals("Jansen", table.getFilteredPersonList().get(0).getLastName());
+        assertEquals(1, table.getFilteredList().size());
+        assertEquals("Jansen", table.getFilteredList().get(0).getLastName());
     }
 
     @Test
     void filterWerktOpVoornaam() {
-        table.changeFilter("jan", "Voornaam");
+        table.changeFilter("","jan", "", "");
 
-        assertEquals(1, table.getFilteredPersonList().size());
-        assertEquals("Jan", table.getFilteredPersonList().get(0).getFirstName());
+        assertEquals(1, table.getFilteredList().size());
+        assertEquals("Jan", table.getFilteredList().get(0).getFirstName());
     }
 
     @Test
     void filterWerktOpJobtitel() {
-        table.changeFilter("manager", "Jobtitel");
+        table.changeFilter("","","manager", "");
 
-        assertEquals(1, table.getFilteredPersonList().size());
+        assertEquals(1, table.getFilteredList().size());
     }
 
     @Test
     void filterWerktOpEmail() {
-        table.changeFilter("Jan", "Email");
+        table.changeFilter("","","","Jan");
 
-        assertEquals(1, table.getFilteredPersonList().size());
+        assertEquals(1, table.getFilteredList().size());
     }
 
     @Test
     void filterVindtGeenOvereenkomst() {
-        table.changeFilter("abc", "Alle kolommen");
+        table.changeFilter("abc", "", "", "");
 
-        assertEquals(0, table.getFilteredPersonList().size());
+        assertEquals(0, table.getFilteredList().size());
     }
 
     @Test
     void legeFilterToontAlles() {
-        table.changeFilter("", "Alle kolommen");
+        table.changeFilter("", "", "", "");
 
-        assertEquals(2, table.getFilteredPersonList().size());
+        assertEquals(2, table.getFilteredList().size());
     }
 
     @Test
@@ -136,24 +136,29 @@ public class ObservableWerknemersTableTest {
         assertEquals("manager", observable.jobTitelProperty().get());
     }
 
-    /*
     @Test
-    void alleJobTitelsWordenCorrectGeformatteerd() throws WerknemerInformationException {
+    void alleJobTitelsWordenCorrectGeformatteerd() {
         for (JobTitel jt : JobTitel.values()) {
-            Werknemer w = Werknemer.builder()
-                    .voornaam("Jan")
-                    .achternaam("Jansen")
-                    .jobTitel(jt)
-                    .geboortedatum(GEBOORTEDATUM)
-                    .land("België")
-                    .postcode("1000")
-                    .stad("Brussel")
-                    .straat("Kerkstraat")
-                    .huisnummer(1)
-                    .build();
-            ObservableWerknemer ow = new ObservableWerknemer(new WerknemerDTO(w.getId(), w.getVoornaam(), w.getAchternaam(), w.getJobTitel().name(), w.getTelefoon(), w.getGeboortedatum(), w.getLand(), w.getPostcode(), w.getStad(), w.getStraat(), w.getHuisnummer(), w.getBus(), w.getEmail(), w.getStatus()));
+            WerknemerDTO dto = new WerknemerDTO(
+                    1,           // id
+                    "Jan",          // voornaam
+                    "Jansen",       // achternaam
+                    jt.name(),      // jobTitel
+                    null,           // telefoon
+                    GEBOORTEDATUM,  // geboortedatum
+                    "België",       // land
+                    "1000",         // postcode
+                    "Brussel",      // stad
+                    "Kerkstraat",   // straat
+                    1,              // huisnummer
+                    null,           // bus
+                    null,           // email
+                    null            // status
+            );
+
+            ObservableWerknemer ow = new ObservableWerknemer(dto);
 
             assertEquals(jt.name().toLowerCase(), ow.jobTitelProperty().get());
         }
-    }*/
+    }
 }

@@ -11,6 +11,10 @@ public class SiteManager {
         this.siteRepo = siteRepo;
     }
 
+    public Site getSiteById(int id) {
+        return siteRepo.get(id);
+    }
+
     public List<Site> getAllSites() {
         List<Site> sites = siteRepo.findAll();
         return sites;

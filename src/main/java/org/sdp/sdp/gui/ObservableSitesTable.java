@@ -1,6 +1,7 @@
 package org.sdp.sdp.gui;
 
 import domein.*;
+import dto.SiteDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -14,37 +15,32 @@ public class ObservableSitesTable {
     private final SiteController controller;
     private final ObservableList<ObservableSite> sitesObservableList;
     @Getter
-    private final FilteredList<ObservableSite> filteredSiteList;
+    private final FilteredList<ObservableSite> filteredList;
 
     public ObservableSitesTable(SiteController controller) {
         this.controller = controller;
         this.sitesObservableList = FXCollections.observableArrayList();
 
-        List<Site> sites = this.controller.getAllSites();
+        List<SiteDTO> sites = this.controller.getAllSites();
         if (sites != null) {
             sites.forEach(site -> sitesObservableList.add(new ObservableSite(site)));
         }
-        this.filteredSiteList = new FilteredList<>(sitesObservableList, site -> true);
+        this.filteredList = new FilteredList<>(sitesObservableList, site -> true);
     }
 
-    public void changeFilter(String filterValue, String kolom) {
-        filteredSiteList.setPredicate(p -> {
-            if (filterValue == null || filterValue.isBlank()) return true;
-            String lower = filterValue.toLowerCase();
+    public void changeFilter(String naam, String locatie, String capaciteit, String operationeleStatus, String productieStatus) {
+        filteredList.setPredicate(p ->
+            matchesFilter(p.nameProperty().get(), naam) &&
+            matchesFilter(p.locatieProperty().get(), locatie) &&
+            matchesFilter(p.capaciteitProperty().get(), capaciteit) &&
+            matchesFilter(p.operationeleStatusProperty().get(), operationeleStatus) &&
+            matchesFilter(p.productieStatusProperty().get(), productieStatus)
+        );
+    }
 
-            return switch (kolom) {
-                case "Naam" -> Objects.toString(p.nameProperty().get(), "").toLowerCase().contains(lower);
-                case "Locatie" -> Objects.toString(p.locatieProperty().get(), "").toLowerCase().contains(lower);
-                case "Operationele Status" ->
-                        Objects.toString(p.operationeleStatusProperty().get(), "").toLowerCase().contains(lower);
-                case "Productie Status" ->
-                        Objects.toString(p.productieStatusProperty().get(), "").toLowerCase().contains(lower);
-                default -> p.nameProperty().get().toLowerCase().contains(lower) ||
-                        Objects.toString(p.locatieProperty().get(), "").toLowerCase().contains(lower) ||
-                        Objects.toString(p.operationeleStatusProperty().get(), "").toLowerCase().contains(lower) ||
-                        Objects.toString(p.productieStatusProperty().get(), "").toLowerCase().contains(lower);
-            };
-        });
+    private boolean matchesFilter(String value, String filter) {
+        if (filter == null || filter.isBlank()) return true;
+        return Objects.toString(value, "").toLowerCase().contains(filter.toLowerCase());
     }
 
     /*

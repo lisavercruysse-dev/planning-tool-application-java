@@ -32,7 +32,7 @@ public class ObservableTeam {
         this.siteDTO = siteController.getSiteFromTeam(team.id());
         this.naam = new SimpleStringProperty(team.naam());
         this.verantwoordelijke = new SimpleStringProperty(verantwoordelijkeDTO.voornaam() + " " + verantwoordelijkeDTO.achternaam());
-        this.site = new SimpleStringProperty(siteDTO.naam());
+        this.site = new SimpleStringProperty(siteDTO.name());
         this.aantalWerknemers = new SimpleStringProperty(String.valueOf(werknemers.size()));
     }
 
