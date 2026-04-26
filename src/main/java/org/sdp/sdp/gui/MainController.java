@@ -51,7 +51,7 @@ public class MainController {
         TeamController teamController = new TeamController();
         SiteController siteController = new SiteController();
         navButtons.put(btnGebruikers, () -> {
-            GebruikersController c = new GebruikersController(this, werknemerController);
+            GebruikersController c = new GebruikersController(this, werknemerController, teamController, siteController);
             return c;
         });
         navButtons.put(btnLogs, () -> loadFxml("/org.sdp.sdp/gui/Logs.fxml"));

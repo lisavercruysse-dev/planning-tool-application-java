@@ -1,7 +1,10 @@
 package org.sdp.sdp.gui;
 
 import domein.JobTitel;
+import domein.SiteController;
+import domein.TeamController;
 import domein.WerknemerController;
+import dto.TeamDTO;
 import dto.WerknemerInputDTO;
 import exception.WerknemerInformationException;
 import javafx.collections.FXCollections;
@@ -9,17 +12,24 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import lombok.Setter;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-public class GebruikersController extends HBox {
+public class GebruikersController extends ScrollPane {
     private final MainController mainController;
 
     @FXML
@@ -111,12 +121,46 @@ public class GebruikersController extends HBox {
     @FXML
     private Label busError;
 
-    @Setter
-    private WerknemerController controller;
+    @FXML
+    private VBox placeholderContainer;
 
-    public GebruikersController(MainController mainController, WerknemerController controller){
+    @FXML
+    private VBox detailContainer;
+
+    @FXML
+    private Label
+            voornaamDetail,
+            achternaamDetail,
+            landDetail,
+            postcodeDetail,
+            stadDetail,
+            straatDetail,
+            huisnrDetail,
+            busDetail,
+            emailDetail,
+            telefoonDetail,
+            jobtitelDetail;
+
+    @FXML
+    private TableView<ObservableTeam> werknemerTeams;
+
+    @FXML
+    private TableColumn<ObservableTeam, String> naamCol, siteCol;
+
+    @FXML
+    private TableColumn<ObservableTeam, Void> buttonCol;
+
+    private WerknemerController werknemerController;
+
+    private TeamController teamController;
+    private SiteController siteController;
+
+    public GebruikersController(MainController mainController, WerknemerController controller, TeamController teamController, SiteController siteController) {
 
         this.mainController = mainController;
+        this.teamController = teamController;
+        this.siteController = siteController;
+        this.werknemerController = controller;
         // wrapper maken
         this.observableWerknemersTable = new ObservableWerknemersTable(controller);
 
@@ -131,6 +175,7 @@ public class GebruikersController extends HBox {
         }
 
         initializeTable();
+        initializeWerknemerTeamsTable();
     }
 
     private void initializeTable() {
@@ -167,11 +212,15 @@ public class GebruikersController extends HBox {
                 addListener((observableValue, oldPerson, newPerson) -> {
                     //Controleer of er een persoon is geselecteerd
                     if (newPerson != null) {
+                        showDetail(newPerson);
                         int index = tblWerknemers.
                                 getSelectionModel().getSelectedIndex();
                         System.out.printf("%d %s %s%n", index,
                                 newPerson.getFirstName(),
                                 newPerson.getLastName());
+                    }
+                    else {
+                        showPlaceholder();
                     }
                 });
 
@@ -180,6 +229,36 @@ public class GebruikersController extends HBox {
             jobtitelInput.getItems().add(jobTitel.name().toLowerCase());
         }
         jobtitelInput.getSelectionModel().selectFirst();
+        showPlaceholder();
+    }
+
+    private void initializeWerknemerTeamsTable() {
+        naamCol.setCellValueFactory(cellData -> cellData.getValue().naamProperty());
+        siteCol.setCellValueFactory(cellData -> cellData.getValue().siteProperty());
+
+        Image trashImage = new Image(getClass().getResource("/images/16201366061606130516-128.png").toString());
+
+        buttonCol.setCellFactory(col -> new TableCell<>() {
+            private final Button deleteBtn = new Button();
+            {
+                ImageView icon = new ImageView(trashImage);
+                icon.setFitWidth(20);
+                icon.setPreserveRatio(true);
+                icon.setSmooth(false);
+                deleteBtn.setGraphic(icon);
+                deleteBtn.setStyle("-fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 0; -fx-background-insets: 0;");
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(deleteBtn);
+                }
+            }
+        });
     }
 
     @FXML
@@ -207,6 +286,43 @@ public class GebruikersController extends HBox {
             txtRol.clear();
         }
     } */
+
+    private void showDetail(ObservableWerknemer werknemer) {
+        List<TeamDTO> teamsWerknemer = teamController.getTeamsVanWerknemer(werknemer.getId());
+        List<TeamDTO> teamsVerantwoordelijke = teamController.getTeamsVanVerantwoordelijke(werknemer.getId());
+
+        Set<TeamDTO> teams = new HashSet<>();
+        teams.addAll(teamsWerknemer);
+        teams.addAll(teamsVerantwoordelijke);
+
+        voornaamDetail.setText(werknemer.firstNameProperty().getValue());
+        achternaamDetail.setText(werknemer.lastNameProperty().getValue());
+        landDetail.setText(werknemer.landProperty().getValue());
+        postcodeDetail.setText(werknemer.postcodeProperty().getValue());
+        stadDetail.setText(werknemer.stadProperty().getValue());
+        straatDetail.setText(werknemer.straatProperty().getValue());
+        huisnrDetail.setText(werknemer.huisnrProperty().getValue());
+        busDetail.setText(werknemer.busProperty().getValue());
+        emailDetail.setText(werknemer.emailProperty().getValue());
+        telefoonDetail.setText(werknemer.telefoonProperty().getValue());
+        jobtitelDetail.setText(werknemer.jobTitelProperty().getValue());
+
+        werknemerTeams.setItems(FXCollections.observableArrayList(
+                teams.stream().map(t -> new ObservableTeam(t, werknemerController, siteController)).toList()
+        ));
+
+        detailContainer.setVisible(true);
+        detailContainer.setManaged(true);
+        placeholderContainer.setVisible(false);
+        placeholderContainer.setManaged(false);
+    }
+
+    private void showPlaceholder() {
+        placeholderContainer.setVisible(true);
+        placeholderContainer.setManaged(true);
+        detailContainer.setVisible(false);
+        detailContainer.setManaged(false);
+    }
 
     public void btnToevoegenAction(ActionEvent actionEvent) {
         voornaamError.setText("");

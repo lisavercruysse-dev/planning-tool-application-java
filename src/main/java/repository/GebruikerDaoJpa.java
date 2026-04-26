@@ -51,4 +51,5 @@ public class GebruikerDaoJpa extends GenericDaoJpa<Werknemer> implements Gebruik
         Team team = em.find(Team.class, teamId);
         return team != null ? team.getVerantwoordelijke() : null;
     }
+
 }
