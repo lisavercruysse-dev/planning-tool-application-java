@@ -67,4 +67,12 @@ public class TeamManager {
             throw ex;
         }
     }
+
+    public List<Team> getTeamsVanWerknemer(int werknemerId) {
+        return teamRepository.getTeamsVanWerknemer(werknemerId);
+    }
+
+    public List<Team> getTeamsVanVerantwoordelijke(int werknemerId) {
+        return teamRepository.getTeamsVanVerantwoordelijke(werknemerId);
+    }
 }

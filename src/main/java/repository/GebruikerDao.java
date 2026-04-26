@@ -1,5 +1,6 @@
 package repository;
 
+import domein.Team;
 import domein.Werknemer;
 
 import java.util.List;
