@@ -15,16 +15,7 @@
                         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                      </padding>
                      <children>
-                        <!-- Filter balk -->
-                        <HBox prefHeight="50.0" prefWidth="200.0">
-                           <padding>
-                              <Insets bottom="10.0" left="12.0" right="12.0" top="10.0" />
-                           </padding>
-                           <children>
-                              <ComboBox fx:id="cmbFilterKolom" prefWidth="180.0" />
-                              <TextField fx:id="txtFilter" onKeyReleased="#filter" promptText="Zoeken..." HBox.hgrow="ALWAYS" />
-                           </children>
-                        </HBox>
+
                         <!-- Tabel -->
                         <TableView fx:id="tblWerknemers" prefHeight="400.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                            <columns>
