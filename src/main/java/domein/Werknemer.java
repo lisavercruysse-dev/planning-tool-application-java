@@ -141,7 +141,7 @@ public class Werknemer {
         }
 
         public Builder telefoon(String telefoon) {
-            this.telefoon = telefoon;
+            this.telefoon = telefoon == null ? null : telefoon.replaceAll("\\s+", "");
             return this;
         }
 
