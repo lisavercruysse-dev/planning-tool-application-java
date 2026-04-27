@@ -55,7 +55,7 @@ public class MainController {
             return c;
         });
         navButtons.put(btnLogs, () -> loadFxml("/org.sdp.sdp/gui/Logs.fxml"));
-        navButtons.put(btnMeldingen, () -> loadFxml("/org.sdp.sdp/gui/meldingen.fxml"));
+        navButtons.put(btnMeldingen, () -> loadFxml("/org.sdp.sdp/gui/Meldingen.fxml"));
         navButtons.put(btnTeams, () -> {
             TeamControllerGUI teamControllerGUI = new TeamControllerGUI(this, teamController, werknemerController, siteController);
             return teamControllerGUI;

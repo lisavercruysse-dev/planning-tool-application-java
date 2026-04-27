@@ -310,3 +310,45 @@
     -fx-text-fill: #999;
     -fx-background-color: transparent;
 }
+
+/* MELDINGEN */
+
+.page-titel {
+    -fx-font-size: 22;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111;
+}
+
+.melding-banner {
+    -fx-background-color: #FEE2E2;
+    -fx-border-color: #FECACA;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.melding-banner-icon {
+    -fx-background-color: #EF4444;
+    -fx-background-radius: 20;
+    -fx-min-width: 32;
+    -fx-min-height: 32;
+    -fx-max-width: 32;
+    -fx-max-height: 32;
+}
+
+.melding-card-container {
+    -fx-border-color: #E5E5E5;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-background-color: white;
+}
+
+.mark-all-read-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #555;
+    -fx-cursor: hand;
+    -fx-padding: 5 10;
+}
+
+.mark-all-read-btn:hover {
+    -fx-text-fill: #111;
+}
