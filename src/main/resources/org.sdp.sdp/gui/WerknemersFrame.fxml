@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
 <fx:root fitToWidth="true" type="ScrollPane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
@@ -142,6 +143,9 @@
                                                 <VBox alignment="CENTER" style="-fx-border-color: #E5E5E5; -fx-border-radius: 15; -fx-padding: 10;">
                                                    <children>
                                                       <TableView fx:id="werknemerTeams" prefHeight="200.0" prefWidth="400.0" styleClass="table">
+                                                          <placeholder>
+                                                              <Label text="Geen teams gevonden."/>
+                                                          </placeholder>
                                                         <columns>
                                                           <TableColumn fx:id="naamCol" prefWidth="150" text="Team Naam" />
                                                           <TableColumn fx:id="siteCol" prefWidth="150" text="Site" />
@@ -159,9 +163,19 @@
                               </HBox>
                            </children>
                         </VBox>
-                        <VBox fx:id="placeholderContainer">
+                        <VBox fx:id="placeholderContainer" alignment="CENTER" VBox.vgrow="ALWAYS">
                            <children>
-                              <Label text="No Details test" />
+                               <ImageView fitHeight="250.0" pickOnBounds="true" preserveRatio="true">
+                                   <image>
+                                       <Image url="@../../images/empty%20box.png" />
+                                   </image>
+                               </ImageView>
+                              <Label style="-fx-font-size: 20;" styleClass="h2" text="Geen Details">
+                                 <padding>
+                                    <Insets top="10.0" />
+                                 </padding>
+                              </Label>
+                              <Label prefHeight="41.0" prefWidth="230.0" text="Selecteer een werknemer in de lijst om details van een werknemer te zien." textAlignment="CENTER" wrapText="true" />
                            </children>
                         </VBox>
                      </children>
