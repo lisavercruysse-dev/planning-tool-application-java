@@ -5,25 +5,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import lombok.Setter;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class SiteControllerGUI extends VBox {
     private final MainController mainController;
-
-    @FXML
-    private ComboBox<String> cmbFilterKolom;
-
-    @FXML
-    private TextField txtFilter;
 
     @FXML
     private TableView<ObservableSite> tblSites;
@@ -43,15 +37,13 @@ public class SiteControllerGUI extends VBox {
     @FXML
     private TableColumn<ObservableSite, String> productieStatusCol;
 
+    private final Map<String, TextField> columnFilterFields = new LinkedHashMap<>();
     private final ObservableSitesTable observableSitesTable;
 
     @FXML
     private TextField addName;
     @FXML
     private TextField addLocatie;
-
-    @Setter
-    private SiteController controller;
 
     public SiteControllerGUI(MainController mainController, SiteController controller){
 
@@ -73,26 +65,59 @@ public class SiteControllerGUI extends VBox {
     }
 
     private void initializeTable() {
-
         nameCol.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
         nameCol.setCellFactory(TextFieldTableCell.forTableColumn());
 
         locatieCol.setCellValueFactory(cellData -> cellData.getValue().locatieProperty());
         capaciteitCol.setCellValueFactory(cellData -> cellData.getValue().capaciteitProperty());
         operationeleStatusCol.setCellValueFactory(cellData -> cellData.getValue().operationeleStatusProperty());
+        operationeleStatusCol.setCellFactory(col -> new TableCell<ObservableSite, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item.substring(0,1).toUpperCase() + item.substring(1).toLowerCase());
+                    switch (item.toUpperCase()) {
+                        case "ACTIEF"   -> setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                        case "INACTIEF" -> setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                        default         -> setStyle("");
+                    }
+                }
+            }
+        });
+
         productieStatusCol.setCellValueFactory(cellData -> cellData.getValue().productieStatusProperty());
+        productieStatusCol.setCellFactory(col -> new TableCell<ObservableSite, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item.substring(0,1).toUpperCase() + item.substring(1).toLowerCase());
+                    switch (item.toUpperCase()) {
+                        case "GEZOND"   -> setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                        case "PROBLEMEN"-> setStyle("-fx-text-fill: orange; -fx-font-weight: bold;");
+                        case "OFFLINE"  -> setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                        default         -> setStyle("");
+                    }
+                }
+            }
+        });
 
-        cmbFilterKolom.setItems(FXCollections.observableArrayList(
-                "Alle kolommen", "Naam", "Locatie", "Operationele Status", "Productie Status"
-        ));
-        cmbFilterKolom.setValue("Alle kolommen");
-
-        // Herfilter wanneer de keuze verandert
-        cmbFilterKolom.setOnAction(e -> filter(null));
+        setupColumnFilter(nameCol, "Naam");
+        setupColumnFilter(locatieCol, "Locatie");
+        setupColumnFilter(capaciteitCol, "Capaciteit");
+        setupColumnFilter(operationeleStatusCol, "Operationele Status");
+        setupColumnFilter(productieStatusCol, "Productie Status");
 
         // SortedList in GUI
         SortedList<ObservableSite> sortedList =
-                new SortedList<>(observableSitesTable.getFilteredSiteList());
+                new SortedList<>(observableSitesTable.getFilteredList());
 
         // Binding voor kolomsortering
         sortedList.comparatorProperty().bind(tblSites.comparatorProperty());
@@ -115,11 +140,35 @@ public class SiteControllerGUI extends VBox {
                 });
     }
 
-    @FXML
-    private void filter(KeyEvent event) {
-        String filterValue = txtFilter.getText();
-        String kolom = cmbFilterKolom.getValue();
-        observableSitesTable.changeFilter(filterValue, kolom);
+    private void setupColumnFilter(TableColumn<?, ?> col, String label) {
+        TextField tf = new TextField();
+        tf.setPromptText("filter...");
+        tf.setMaxWidth(Double.MAX_VALUE);
+        tf.setStyle("-fx-font-weight: normal; -fx-padding: 2 4 2 4;");
+
+        Label lbl = new Label(label);
+        lbl.setStyle("-fx-font-weight: bold;");
+        lbl.setMaxWidth(Double.MAX_VALUE);
+        lbl.setAlignment(Pos.CENTER);
+
+        VBox vbox = new VBox(3, tf, lbl);
+        vbox.setMaxWidth(Double.MAX_VALUE);
+        lbl.setAlignment(Pos.CENTER);
+        col.setGraphic(vbox);
+        col.setText("");
+
+        columnFilterFields.put(label, tf);
+        tf.textProperty().addListener((obs, old, newVal) -> updateFilter());
+    }
+
+    private void updateFilter() {
+        observableSitesTable.changeFilter(
+                columnFilterFields.get("Naam").getText(),
+                columnFilterFields.get("Locatie").getText(),
+                columnFilterFields.get("Capaciteit").getText(),
+                columnFilterFields.get("Operationele Status").getText(),
+                columnFilterFields.get("Productie Status").getText()
+        );
     }
 
 

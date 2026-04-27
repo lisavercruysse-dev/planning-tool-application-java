@@ -10,13 +10,14 @@ import javafx.collections.transformation.FilteredList;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ObservableWerknemersTable {
 
     private final WerknemerController controller;
     private final ObservableList<ObservableWerknemer> werknemerObservableList;
     @Getter
-    private final FilteredList<ObservableWerknemer> filteredPersonList;
+    private final FilteredList<ObservableWerknemer> filteredList;
 
     public ObservableWerknemersTable(WerknemerController controller) {
         this.controller = controller;
@@ -26,24 +27,21 @@ public class ObservableWerknemersTable {
         if (werknemers != null) {
             werknemers.forEach(p -> werknemerObservableList.add(new ObservableWerknemer(p)));
         }
-        this.filteredPersonList = new FilteredList<>(werknemerObservableList, p -> true);
+        this.filteredList = new FilteredList<>(werknemerObservableList, p -> true);
     }
 
-    public void changeFilter(String filterValue, String kolom) {
-        filteredPersonList.setPredicate(p -> {
-            if (filterValue == null || filterValue.isBlank()) return true;
-            String lower = filterValue.toLowerCase();
-            return switch (kolom) {
-                case "Achternaam" -> p.lastNameProperty().get().toLowerCase().contains(lower);
-                case "Voornaam" -> p.firstNameProperty().get().toLowerCase().contains(lower);
-                case "Jobtitel" -> p.jobTitelProperty().get().toLowerCase().contains(lower);
-                case "Email" -> p.emailProperty().get().toLowerCase().contains(lower);
-                default -> p.firstNameProperty().get().toLowerCase().contains(lower) ||
-                        p.lastNameProperty().get().toLowerCase().contains(lower) ||
-                        p.jobTitelProperty().get().toLowerCase().contains(lower) ||
-                        p.emailProperty().get().toLowerCase().contains(lower);
-            };
-        });
+    public void changeFilter(String achternaam, String voornaam, String jobtitel, String email) {
+        filteredList.setPredicate(p ->
+            matchesFilter(p.lastNameProperty().get(), achternaam) &&
+            matchesFilter(p.firstNameProperty().get(), voornaam) &&
+            matchesFilter(p.jobTitelProperty().get(), jobtitel) &&
+            matchesFilter(p.emailProperty().get(), email)
+        );
+    }
+
+    private boolean matchesFilter(String value, String filter) {
+        if (filter == null || filter.isBlank()) return true;
+        return Objects.toString(value, "").toLowerCase().contains(filter.toLowerCase());
     }
 
     public ObservableWerknemer addWerknemer(WerknemerInputDTO dto) throws WerknemerInformationException {

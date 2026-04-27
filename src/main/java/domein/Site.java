@@ -4,13 +4,15 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import util.SiteElement;
 
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name="sites")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
+@Getter @Setter
 public class Site {
 
     @Id
@@ -27,16 +29,71 @@ public class Site {
     @Column(name="capaciteit")
     private int capaciteit;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="operationeleStatus")
-    private String operationeleStatus;
+    private OperationeleStatus operationeleStatus;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "productieStatus")
-    private String productieStatus;
+    private ProductieStatus productieStatus;
 
     @OneToMany(mappedBy = "site")
     private List<Team> teams;
 
-    public Site(String name, String locatie, int capaciteit, String operationeleStatus, String productieStatus) {
+    private Site(Builder builder){
+        this.name = builder.name;
+        this.locatie = builder.locatie;
+        this.capaciteit = builder.capaciteit;
+        this.operationeleStatus = builder.operationeleStatus;
+        this.productieStatus = builder.productieStatus;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder{
+        private Map<SiteElement, String> errors;
+
+        private String name;
+        private String locatie;
+        private int capaciteit;
+        private OperationeleStatus operationeleStatus;
+        private ProductieStatus productieStatus;
+
+        public Builder name(String name){
+            this.name = name;
+            return this;
+        }
+
+        public Builder locatie(String locatie){
+            this.locatie = locatie;
+            return this;
+        }
+
+        public Builder capaciteit(Integer capaciteit){
+            this.capaciteit = capaciteit;
+            return this;
+        }
+
+        public Builder operationeleStatus(OperationeleStatus operationeleStatus){
+            this.operationeleStatus = operationeleStatus;
+            return this;
+        }
+
+        public Builder productieStatus(ProductieStatus productieStatus){
+            this.productieStatus = productieStatus;
+            return this;
+        }
+
+        public Site build(){
+
+            return new Site(this);
+        }
+    }
+
+
+    public Site(String name, String locatie, int capaciteit, OperationeleStatus operationeleStatus, ProductieStatus productieStatus) {
         this.name = name;
         this.locatie = locatie;
         this.capaciteit = capaciteit;

@@ -1,4 +1,6 @@
 import domein.*;
+import dto.SiteDTO;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,132 +15,109 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ObservableSitesTableTest {
+    private SiteController controller;
+    private ObservableSitesTable table;
+    private Site s1;
+    private Site s2;
+    private Site s3;
+
+    @BeforeEach
+    void setUp(){
+        controller = mock(SiteController.class);
+
+        s1 = Site.builder()
+                .name("Site A")
+                .locatie("Gent")
+                .capaciteit(100)
+                .operationeleStatus(OperationeleStatus.ACTIEF)
+                .productieStatus(ProductieStatus.GEZOND)
+                .build();
+        s2 = Site.builder()
+                .name("Site B")
+                .locatie("Aalst")
+                .capaciteit(120)
+                .operationeleStatus(OperationeleStatus.INACTIEF)
+                .productieStatus(ProductieStatus.OFFLINE)
+                .build();
+        s3 = Site.builder()
+                .name("Site C")
+                .locatie("Brussel")
+                .capaciteit(150)
+                .operationeleStatus(OperationeleStatus.INACTIEF)
+                .productieStatus(ProductieStatus.PROBLEMEN)
+                .build();
+
+        when(controller.getAllSites()).thenReturn(List.of(
+                new SiteDTO(s1.getId(), s1.getName(), s1.getLocatie(), s1.getCapaciteit(), s1.getOperationeleStatus().name(), s1.getProductieStatus().name()),
+                new SiteDTO(s2.getId(), s2.getName(), s2.getLocatie(), s2.getCapaciteit(), s2.getOperationeleStatus().name(), s2.getProductieStatus().name()),
+                new SiteDTO(s3.getId(), s3.getName(), s3.getLocatie(), s3.getCapaciteit(), s3.getOperationeleStatus().name(), s3.getProductieStatus().name())
+                ));
+
+        table = new ObservableSitesTable(controller);
+    }
+
     @Test
     void lijstWordtCorrectOpgevuld() {
-        // Arrange
-        SiteController controller = mock(SiteController.class);
-
-        Site s1 = new Site("Site A", "Gent", 100, "Actief", "Lopend");
-        Site s2 = new Site("Site B", "Eindhoven", 125, "Inactief", "Gestopt");
-
-        when(controller.getAllSites()).thenReturn(List.of(s1, s2));
-
-        // Act
-        ObservableSitesTable table = new ObservableSitesTable(controller);
-
-        // Assert
-        assertEquals(2, table.getFilteredSiteList().size());
+        assertEquals(3, table.getFilteredList().size());
     }
 
     @Test
     void filterWerktOpNaam() {
-        // Arrange
-        SiteController controller = mock(SiteController.class);
+        table.changeFilter("a", "","","","");
 
-        Site s1 = new Site("Site Gent", "Gent", 100, "Actief", "Lopend");
-        Site s2 = new Site("Site Eindhoven", "Eindhoven", 125, "Inactief", "Gestopt");
-
-        when(controller.getAllSites()).thenReturn(List.of(s1, s2));
-
-        // Act
-        ObservableSitesTable table = new ObservableSitesTable(controller);
-        table.changeFilter("Site Gent", "Naam");
-
-        // Assert
-        assertEquals(1, table.getFilteredSiteList().size());
-        assertEquals("Site Gent", table.getFilteredSiteList().get(0).getName());
+        assertEquals(1, table.getFilteredList().size());
+        assertEquals("Site A", table.getFilteredList().get(0).getName());
     }
 
     @Test
     void filterWerktOpLocatie() {
-        // Arrange
-        SiteController controller = mock(SiteController.class);
+        table.changeFilter("", "Gen","","","");
 
-        Site s1 = new Site("Site A", "Gent", 100, "Actief", "Lopend");
-        Site s2 = new Site("Site B", "Eindhoven", 125, "Inactief", "Gestopt");
-
-        when(controller.getAllSites()).thenReturn(List.of(s1, s2));
-
-        // Act
-        ObservableSitesTable table = new ObservableSitesTable(controller);
-        table.changeFilter("Gent", "Locatie");
-
-        // Assert
-        assertEquals(1, table.getFilteredSiteList().size());
-        assertEquals("Site A", table.getFilteredSiteList().get(0).getName());
+        assertEquals(1, table.getFilteredList().size());
+        assertEquals("Site A", table.getFilteredList().get(0).getName());
     }
 
     @Test
     void filterWerktOpOperationeleStatus() {
-        // Arrange
-        SiteController controller = mock(SiteController.class);
+        table.changeFilter("","","","inactief", "");
 
-        Site s1 = new Site("Site A", "Gent", 100, "Actief", "Lopend");
-        Site s2 = new Site("Site B", "Eindhoven", 125, "Inactief", "Gestopt");
-
-        when(controller.getAllSites()).thenReturn(List.of(s1, s2));
-
-        // Act
-        ObservableSitesTable table = new ObservableSitesTable(controller);
-        table.changeFilter("Inactief", "Operationele Status");
-
-        // Assert
-        assertEquals(1, table.getFilteredSiteList().size());
-        assertEquals("Site B", table.getFilteredSiteList().get(0).getName());
+        assertEquals(2, table.getFilteredList().size());
     }
 
     @Test
     void filterWerktOpProductieStatus() {
-        // Arrange
-        SiteController controller = mock(SiteController.class);
+        table.changeFilter("","","","","gezond");
 
-        Site s1 = new Site("Site A", "Gent", 100, "Actief", "Lopend");
-        Site s2 = new Site("Site B", "Eindhoven", 125, "Inactief", "Gestopt");
+        assertEquals(1, table.getFilteredList().size());
+        assertEquals("Site A", table.getFilteredList().get(0).getName());
+    }
 
-        when(controller.getAllSites()).thenReturn(List.of(s1, s2));
+    @Test
+    void filterWerktOpComboOperationeleEnProductieStatus() {
+        table.changeFilter("","","","inactief","offline");
 
-        // Act
-        ObservableSitesTable table = new ObservableSitesTable(controller);
-        table.changeFilter("Gestopt", "Productie Status");
+        assertEquals(1, table.getFilteredList().size());
+        assertEquals("Site B", table.getFilteredList().get(0).getName());
 
-        // Assert
-        assertEquals(1, table.getFilteredSiteList().size());
-        assertEquals("Site B", table.getFilteredSiteList().get(0).getName());
+        table.changeFilter("","","","inactief","problemen");
+
+        assertEquals(1, table.getFilteredList().size());
+        assertEquals("Site C", table.getFilteredList().get(0).getName());
     }
 
     @Test
     void filterVindtGeenOvereenkomst() {
-        // Arrange
-        SiteController controller = mock(SiteController.class);
+        table.changeFilter("abc", "","","","");
 
-        Site s1 = new Site("Site A", "Gent", 100, "Actief", "Lopend");
-        Site s2 = new Site("Site B", "Eindhoven", 125, "Inactief", "Gestopt");
-
-        when(controller.getAllSites()).thenReturn(List.of(s1, s2));
-
-        // Act
-        ObservableSitesTable table = new ObservableSitesTable(controller);
-        table.changeFilter("abc", "Alle kolommen");
-
-        // Assert
-        assertEquals(0, table.getFilteredSiteList().size());
+        assertEquals(0, table.getFilteredList().size());
     }
 
     @Test
     void legeFilterToontAlles() {
-        // Arrange
-        SiteController controller = mock(SiteController.class);
+        table.changeFilter("", "","","","");
 
-        Site s1 = new Site("Site A", "Gent", 100, "Actief", "Lopend");
-        Site s2 = new Site("Site B", "Eindhoven", 125, "Inactief", "Gestopt");
-
-        when(controller.getAllSites()).thenReturn(List.of(s1, s2));
-
-        // Act
-        ObservableSitesTable table = new ObservableSitesTable(controller);
-        table.changeFilter("", "Alle kolommen");
-
-        // Assert
-        assertEquals(2, table.getFilteredSiteList().size());
+        assertEquals(3, table.getFilteredList().size());
     }
+
+
 }

@@ -1,6 +1,7 @@
 package org.sdp.sdp.gui;
 
 import domein.*;
+import dto.SiteDTO;
 import javafx.util.StringConverter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -24,7 +25,7 @@ public class TeamToevoegenController extends VBox {
     @FXML
     public ComboBox<Werknemer> verantwoordelijke;
 
-    @FXML ComboBox<Site> site;
+    @FXML ComboBox<SiteDTO> site;
 
     @FXML
     public Label naamError;
@@ -58,14 +59,14 @@ public class TeamToevoegenController extends VBox {
         });
 
         site.getItems().addAll(siteController.getAllSites());
-        site.setConverter(new StringConverter<Site>() {
+        site.setConverter(new StringConverter<SiteDTO>() {
             @Override
-            public String toString(Site site) {
-                return site == null ? "" : site.getName(); // ← null-check hier;
+            public String toString(SiteDTO site) {
+                return site == null ? "" : site.name(); // ← null-check hier;
             }
 
             @Override
-            public Site fromString(String s) {
+            public SiteDTO fromString(String s) {
                 return null;
             }
         });
@@ -85,7 +86,8 @@ public class TeamToevoegenController extends VBox {
 
         String naam = this.naam.getText();
         Werknemer verantwoordelijke = this.verantwoordelijke.getSelectionModel().getSelectedItem();
-        Site site = this.site.getSelectionModel().getSelectedItem();
+        SiteDTO siteDTO = this.site.getSelectionModel().getSelectedItem();
+        Site site = siteDTO != null ? siteController.getSiteById(siteDTO.id()) : null;
 
         Set<String> errors = Team.validate( verantwoordelijke, naam, site);
 
