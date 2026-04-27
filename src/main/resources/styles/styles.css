@@ -131,7 +131,7 @@
 }
 
 .table .table-row-cell:odd {
-    -fx-background-color: #f5f5f5;
+    -fx-background-color: #fafafa;
 }
 
 .table .filler {
