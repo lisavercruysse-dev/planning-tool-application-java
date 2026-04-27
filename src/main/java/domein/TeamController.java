@@ -30,4 +30,14 @@ public class TeamController {
     public void deleteTeam(TeamDTO team) {
         teamManager.deleteTeam(team);
     }
+
+    public List<TeamDTO> getTeamsVanWerknemer(int werknemerId) {
+        List<Team> teams =  teamManager.getTeamsVanWerknemer(werknemerId);
+        return teams.stream().map(t -> new TeamDTO(t.getId(), t.getNaam())).toList();
+    }
+
+    public List<TeamDTO> getTeamsVanVerantwoordelijke(int werknemerId) {
+        List<Team> teams = teamManager.getTeamsVanVerantwoordelijke(werknemerId);
+        return teams.stream().map(t -> new TeamDTO(t.getId(), t.getNaam())).toList();
+    }
 }

@@ -13,6 +13,13 @@ public class ObservableWerknemer {
     private final StringProperty achternaam;
     private final StringProperty jobTitel;
     private final StringProperty email;
+    private final StringProperty telefoon;
+    private final StringProperty land;
+    private final StringProperty postcode;
+    private final StringProperty stad;
+    private final StringProperty straat;
+    private final StringProperty huisnr;
+    private final StringProperty bus;
 
    /* @Getter
     private final Werknemer werknemer;*/ // koppeling naar domein
@@ -23,6 +30,13 @@ public class ObservableWerknemer {
         this.achternaam = new SimpleStringProperty(werknemer.achternaam());
         this.jobTitel = new SimpleStringProperty(werknemer.jobTitel().toLowerCase());
         this.email = new SimpleStringProperty(werknemer.email());
+        this.telefoon = new SimpleStringProperty(werknemer.telefoon());
+        this.land = new SimpleStringProperty(werknemer.land());
+        this.postcode = new SimpleStringProperty(werknemer.postcode());
+        this.stad = new SimpleStringProperty(werknemer.stad());
+        this.straat = new SimpleStringProperty(werknemer.straat());
+        this.huisnr = new SimpleStringProperty(werknemer.huisnummer().toString());
+        this.bus = new SimpleStringProperty();
 
         // wijzigingen in GUI doorgeven aan domein
         //this.voornaam.addListener((obs, oldVal, newVal) -> werknemer.setVoornaam(newVal));
@@ -33,6 +47,13 @@ public class ObservableWerknemer {
     public StringProperty lastNameProperty() { return achternaam; }
     public StringProperty jobTitelProperty() { return jobTitel; }
     public StringProperty emailProperty() { return email; }
+    public StringProperty telefoonProperty() { return telefoon; }
+    public StringProperty landProperty() { return land; }
+    public StringProperty postcodeProperty() { return postcode; }
+    public StringProperty stadProperty() { return stad; }
+    public StringProperty straatProperty() { return straat; }
+    public StringProperty huisnrProperty() { return huisnr; }
+    public StringProperty busProperty() { return bus; }
 
     public String getFirstName() {
         return voornaam.get();
