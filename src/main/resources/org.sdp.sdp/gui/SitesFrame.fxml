@@ -14,7 +14,7 @@
                     </padding>
                     <children>
                         <!-- Tabel -->
-                        <TableView fx:id="tblSites" prefHeight="400.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="tblSites" styleClass="table" prefHeight="400.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                             <columns>
                                 <TableColumn fx:id="nameCol" text="Naam" />
                                 <TableColumn fx:id="locatieCol" text="Locatie" />
