@@ -1,5 +1,6 @@
 package org.sdp.sdp.gui;
 
+import domein.MeldingenController;
 import domein.SiteController;
 import domein.TeamController;
 import domein.WerknemerController;
@@ -20,6 +21,8 @@ import java.util.function.Supplier;
 public class MainController {
 
     private final Map<ToggleButton, Supplier<Node>> navButtons = new HashMap<>();
+
+    private MeldingenController meldingenController;
 
     @FXML
     public ToggleButton btnGebruikers;
@@ -55,7 +58,14 @@ public class MainController {
             return c;
         });
         navButtons.put(btnLogs, () -> loadFxml("/org.sdp.sdp/gui/Logs.fxml"));
-        navButtons.put(btnMeldingen, () -> loadFxml("/org.sdp.sdp/gui/meldingen.fxml"));
+        navButtons.put(btnMeldingen, () -> {
+            if (meldingenController == null) {
+                meldingenController = new MeldingenController(
+                        teamController.getAllTeams(),
+                        werknemerController.getWerknemers());
+            }
+            return loadMeldingen(meldingenController);
+        });
         navButtons.put(btnTeams, () -> {
             TeamControllerGUI teamControllerGUI = new TeamControllerGUI(this, teamController, werknemerController, siteController);
             return teamControllerGUI;
@@ -82,7 +92,20 @@ public class MainController {
         contentPane.getChildren().add(newContent);
     }
 
-    // Hulpmethode voor gewone FXML's (zonder fx:root patroon)
+    private Node loadMeldingen(MeldingenController domeinMeldingenController) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org.sdp.sdp/gui/Meldingen.fxml"));
+            Node node = loader.load();
+            MeldingenControllerGUI controller = loader.getController();
+            controller.setMainController(this);
+            controller.setDomeinController(domeinMeldingenController);
+            return node;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Helper for plain FXML screens (no fx:root pattern)
     private Node loadFxml(String path) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
