@@ -10,7 +10,7 @@
             style="-fx-background-color: white; -fx-background: white;"
             xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.sdp.sdp.gui.MeldingenController">
+            fx:controller="org.sdp.sdp.gui.MeldingenControllerGUI">
     <content>
         <VBox spacing="16.0" style="-fx-background-color: white;" maxWidth="Infinity">
             <padding>

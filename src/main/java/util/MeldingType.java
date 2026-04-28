@@ -1,18 +1,17 @@
-package domein;
+package util;
 
+import lombok.Getter;
+
+@Getter
 public enum MeldingType {
-    TAAK_TOEGEWEZEN("Taak Toegewezen"),
-    TAAK_GEWIJZIGD("Taak Gewijzigd"),
+    TEAM_AANGEMAAKT("Team aangemaakt"),
+    WERKNEMER_TOEGEVOEGD("Werknemer toegevoegd"),
     SYSTEEM("Systeem");
 
     private final String display;
 
     MeldingType(String display) {
         this.display = display;
-    }
-
-    public String getDisplay() {
-        return display;
     }
 
     @Override

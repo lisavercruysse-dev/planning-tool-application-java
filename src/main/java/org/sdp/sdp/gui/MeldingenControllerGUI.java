@@ -1,8 +1,8 @@
 package org.sdp.sdp.gui;
 
-import domein.MeldingType;
+import domein.MeldingenController;
+import dto.MeldingDTO;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,18 +17,15 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
-public class MeldingenController implements CanPopup {
+public class MeldingenControllerGUI implements CanPopup {
 
     private MainController mainController;
-    private final domein.MeldingenController domeinController = new domein.MeldingenController();
-    private final ObservableList<ObservableMelding> alleMeldingen = FXCollections.observableArrayList();
+    private MeldingenController domeinController;
 
-    // Cached images – loaded once to avoid repeated I/O on every card render
     private Image fileImage;
     private Image trashImage;
 
@@ -44,55 +41,50 @@ public class MeldingenController implements CanPopup {
         fileImage  = new Image(getClass().getResourceAsStream("/images/file-solid.png"));
         trashImage = new Image(getClass().getResourceAsStream("/images/16201366061606130516-128.png"));
 
-        domeinController.getMeldingen().stream()
-                .map(ObservableMelding::new)
-                .forEach(alleMeldingen::add);
-
         statusFilter.setItems(FXCollections.observableArrayList("Ongelezen", "Gelezen", "Alle"));
         statusFilter.getSelectionModel().selectFirst();
-
-        typeFilter.setItems(FXCollections.observableArrayList(
-                "Alle types",
-                MeldingType.TAAK_TOEGEWEZEN.getDisplay(),
-                MeldingType.TAAK_GEWIJZIGD.getDisplay(),
-                MeldingType.SYSTEEM.getDisplay()));
-        typeFilter.getSelectionModel().selectFirst();
 
         statusFilter.getSelectionModel().selectedItemProperty()
                 .addListener((obs, old, newVal) -> refreshMeldingen());
         typeFilter.getSelectionModel().selectedItemProperty()
                 .addListener((obs, old, newVal) -> refreshMeldingen());
+    }
+
+    public void setDomeinController(MeldingenController controller) {
+        this.domeinController = controller;
+
+        List<String> types = new ArrayList<>();
+        types.add("Alle types");
+        types.addAll(domeinController.getMeldingTypes());
+        typeFilter.setItems(FXCollections.observableArrayList(types));
+        typeFilter.getSelectionModel().selectFirst();
 
         refreshMeldingen();
     }
 
     @FXML
     private void markeerAllesAlsGelezen() {
+        if (domeinController == null) return;
         domeinController.markeerAllesAlsGelezen();
-        alleMeldingen.forEach(m -> m.setGelezen(true));
         refreshMeldingen();
     }
 
     private void refreshMeldingen() {
-        String statusSel = statusFilter.getSelectionModel().getSelectedItem();
-        String typeSel = typeFilter.getSelectionModel().getSelectedItem();
+        if (domeinController == null) return;
 
-        List<ObservableMelding> gefilterd = alleMeldingen.stream()
-                .filter(m -> switch (statusSel) {
-                    case "Ongelezen" -> !m.isGelezen();
-                    case "Gelezen"   -> m.isGelezen();
-                    default          -> true;
-                })
-                .filter(m -> "Alle types".equals(typeSel)
-                        || m.getType().getDisplay().equals(typeSel))
-                .toList();
+        String statusSel = statusFilter.getSelectionModel().getSelectedItem();
+        String typeSel   = typeFilter.getSelectionModel().getSelectedItem();
+
+        List<MeldingDTO> gefilterd = domeinController.getMeldingen(
+                statusSel != null ? statusSel : "Alle",
+                typeSel   != null ? typeSel   : "Alle types");
 
         meldingenContainer.getChildren().clear();
-        for (ObservableMelding melding : gefilterd) {
+        for (MeldingDTO melding : gefilterd) {
             meldingenContainer.getChildren().add(buildMeldingCard(melding));
         }
 
-        long aantalOngelezen = alleMeldingen.stream().filter(m -> !m.isGelezen()).count();
+        long aantalOngelezen = domeinController.getAantalOngelezen();
         bannerLabel.setText("Je hebt " + aantalOngelezen
                 + " ongelezen melding" + (aantalOngelezen == 1 ? "" : "en"));
         meldingenHeader.setText("Meldingen (" + gefilterd.size() + ")");
@@ -100,8 +92,8 @@ public class MeldingenController implements CanPopup {
         ongelezeBanner.setManaged(aantalOngelezen > 0);
     }
 
-    private Node buildMeldingCard(ObservableMelding melding) {
-        boolean ongelezen = !melding.isGelezen();
+    private Node buildMeldingCard(MeldingDTO melding) {
+        boolean ongelezen = !melding.gelezen();
 
         VBox card = new VBox(8);
         card.setPadding(new Insets(15));
@@ -109,7 +101,7 @@ public class MeldingenController implements CanPopup {
                 ? "-fx-background-color: #FEE2E2; -fx-border-color: #FECACA; -fx-border-radius: 8; -fx-background-radius: 8;"
                 : "-fx-background-color: white; -fx-border-color: #E5E5E5; -fx-border-radius: 8; -fx-background-radius: 8;");
 
-        // ── Top row: icon + title + (optional) mark-as-read ──────────────────
+        //Top row: icon + title + (optioneel) markeren als gelezen
         HBox topRow = new HBox(10);
         topRow.setAlignment(Pos.CENTER_LEFT);
 
@@ -124,7 +116,7 @@ public class MeldingenController implements CanPopup {
             fileIcon.setOpacity(0.45);
         }
 
-        Label titelLabel = new Label(melding.getTitel());
+        Label titelLabel = new Label(melding.titel());
         titelLabel.setStyle(ongelezen
                 ? "-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #111;"
                 : "-fx-font-size: 14; -fx-text-fill: #333;");
@@ -139,25 +131,25 @@ public class MeldingenController implements CanPopup {
             markeerBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #666;"
                     + "-fx-cursor: hand; -fx-padding: 3 8; -fx-font-size: 12;");
             markeerBtn.setOnAction(e -> {
-                melding.setGelezen(true);
-                domeinController.markeerAlsGelezen(melding.getId());
+                domeinController.markeerAlsGelezen(melding.id());
                 refreshMeldingen();
             });
             topRow.getChildren().add(markeerBtn);
         }
 
-        // ── Detail row ────────────────────────────────────────────────────────
-        Label detailLabel = new Label(melding.getDetail());
+        //Detail row
+        Label detailLabel = new Label(melding.detail());
         detailLabel.setStyle("-fx-text-fill: #333; -fx-font-size: 13;");
         detailLabel.setPadding(new Insets(0, 0, 0, 28));
 
-        // ── Bottom row: time + delete + bekijk ────────────────────────────────
+        //Bottom row: date + delete + bekijk
         HBox bottomRow = new HBox(8);
         bottomRow.setAlignment(Pos.CENTER_LEFT);
 
-        Label tijdLabel = new Label(formatTijdslot(melding.getBeginTijd(), melding.getEindTijd()));
-        tijdLabel.setStyle("-fx-text-fill: #888; -fx-font-size: 12;");
-        tijdLabel.setPadding(new Insets(0, 0, 0, 28));
+        DateTimeFormatter datumFmt = DateTimeFormatter.ofPattern("d/MM/yyyy");
+        Label datumLabel = new Label(melding.datum().format(datumFmt));
+        datumLabel.setStyle("-fx-text-fill: #888; -fx-font-size: 12;");
+        datumLabel.setPadding(new Insets(0, 0, 0, 28));
 
         Region bottomSpacer = new Region();
         HBox.setHgrow(bottomSpacer, Priority.ALWAYS);
@@ -171,8 +163,7 @@ public class MeldingenController implements CanPopup {
         deleteBtn.setStyle("-fx-background-color: white; -fx-border-color: #E5E5E5;"
                 + "-fx-border-radius: 5; -fx-cursor: hand; -fx-padding: 5 8;");
         deleteBtn.setOnAction(e -> {
-            domeinController.verwijderMelding(melding.getId());
-            alleMeldingen.remove(melding);
+            domeinController.verwijderMelding(melding.id());
             refreshMeldingen();
         });
 
@@ -181,13 +172,13 @@ public class MeldingenController implements CanPopup {
                 + "-fx-border-radius: 5; -fx-cursor: hand; -fx-padding: 5 14;");
         bekijkBtn.setOnAction(e -> toonMeldingDetails(melding));
 
-        bottomRow.getChildren().addAll(tijdLabel, bottomSpacer, deleteBtn, bekijkBtn);
+        bottomRow.getChildren().addAll(datumLabel, bottomSpacer, deleteBtn, bekijkBtn);
 
         card.getChildren().addAll(topRow, detailLabel, bottomRow);
         return card;
     }
 
-    private void toonMeldingDetails(ObservableMelding melding) {
+    private void toonMeldingDetails(MeldingDTO melding) {
         if (mainController == null) return;
 
         VBox popup = new VBox(12);
@@ -198,32 +189,27 @@ public class MeldingenController implements CanPopup {
         Label titelLabel = new Label("Melding Details");
         titelLabel.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
 
-        Label typeLabel = new Label("Type: " + melding.getType().getDisplay());
+        Label typeLabel = new Label("Type: " + melding.type());
         typeLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #555;");
 
-        Label naamLabel = new Label(melding.getDetail());
+        Label naamLabel = new Label(melding.detail());
         naamLabel.setStyle("-fx-font-size: 14; -fx-font-weight: bold;");
 
-        Label tijdLabel = new Label("Tijd: " + formatTijdslot(melding.getBeginTijd(), melding.getEindTijd()));
-        tijdLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #555;");
+        DateTimeFormatter datumFmt = DateTimeFormatter.ofPattern("d/MM/yyyy");
+        Label datumLabel = new Label("Datum: " + melding.datum().format(datumFmt));
+        datumLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #555;");
 
-        Label statusLabel = new Label("Status: " + (melding.isGelezen() ? "Gelezen" : "Ongelezen"));
+        Label statusLabel = new Label("Status: " + (melding.gelezen() ? "Gelezen" : "Ongelezen"));
         statusLabel.setStyle("-fx-font-size: 13; -fx-text-fill: "
-                + (melding.isGelezen() ? "#555;" : "#EF4444;"));
+                + (melding.gelezen() ? "#555;" : "#EF4444;"));
 
         Button sluitenBtn = new Button("Sluiten");
         sluitenBtn.setStyle("-fx-background-color: #E3E3E3; -fx-padding: 6 14; -fx-border-radius: 5;"
                 + "-fx-background-radius: 5; -fx-cursor: hand;");
         sluitenBtn.setOnAction(e -> mainController.closePopup());
 
-        popup.getChildren().addAll(titelLabel, typeLabel, naamLabel, tijdLabel, statusLabel, sluitenBtn);
+        popup.getChildren().addAll(titelLabel, typeLabel, naamLabel, datumLabel, statusLabel, sluitenBtn);
         mainController.showPopup(popup);
-    }
-
-    private String formatTijdslot(LocalTime begin, LocalTime eind) {
-        long uren = begin.until(eind, ChronoUnit.HOURS);
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("H:mm");
-        return String.format("%s - %s (%d uur)", begin.format(fmt), eind.format(fmt), uren);
     }
 
     @Override

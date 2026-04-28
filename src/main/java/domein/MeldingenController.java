@@ -1,31 +1,69 @@
 package domein;
 
+import dto.MeldingDTO;
+import dto.TeamDTO;
+import dto.WerknemerDTO;
+import util.MeldingType;
+
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class MeldingenController {
 
     private final List<Melding> meldingen = new ArrayList<>();
 
-    public MeldingenController() {
-        // Mock data
-        meldingen.add(new Melding(
-                1, MeldingType.TAAK_TOEGEWEZEN, "Nieuwe taak toegewezen",
-                "Taak ABC gepland op 5/12/2025",
-                LocalDate.of(2025, 5, 12),
-                LocalTime.of(14, 0), LocalTime.of(17, 0), false));
-
-        meldingen.add(new Melding(
-                2, MeldingType.TAAK_TOEGEWEZEN, "Nieuwe taak toegewezen",
-                "Taak DEF gepland op 5/12/2025",
-                LocalDate.of(2025, 5, 12),
-                LocalTime.of(14, 0), LocalTime.of(17, 0), true));
+    public MeldingenController(List<TeamDTO> teams, List<WerknemerDTO> werknemers) {
+        laadMeldingen(teams, werknemers);
     }
 
-    public List<Melding> getMeldingen() {
-        return List.copyOf(meldingen);
+    private void laadMeldingen(List<TeamDTO> teams, List<WerknemerDTO> werknemers) {
+        AtomicLong idTeller = new AtomicLong(1);
+        LocalDate vandaag = LocalDate.now();
+
+        for (TeamDTO team : teams) {
+            meldingen.add(new Melding(
+                    idTeller.getAndIncrement(),
+                    MeldingType.TEAM_AANGEMAAKT,
+                    "Team aangemaakt",
+                    "Het team '" + team.naam() + "' is beschikbaar in het systeem.",
+                    vandaag, false));
+        }
+
+        for (WerknemerDTO w : werknemers) {
+            meldingen.add(new Melding(
+                    idTeller.getAndIncrement(),
+                    MeldingType.WERKNEMER_TOEGEVOEGD,
+                    "Werknemer geregistreerd",
+                    String.format("%s %s is geregistreerd als %s.", w.voornaam(), w.achternaam(), w.jobTitel().toLowerCase()),
+                    vandaag, false));
+        }
+    }
+
+    private MeldingDTO toDTO(Melding m) {
+        return new MeldingDTO(m.getId(), m.getType().getDisplay(),
+                m.getTitel(), m.getDetail(), m.getDatum(), m.isGelezen());
+    }
+
+    public List<MeldingDTO> getMeldingen(String statusFilter, String typeFilter) {
+        return meldingen.stream()
+                .filter(m -> switch (statusFilter) {
+                    case "Ongelezen" -> !m.isGelezen();
+                    case "Gelezen"   -> m.isGelezen();
+                    default          -> true;
+                })
+                .filter(m -> "Alle types".equals(typeFilter)
+                        || m.getType().getDisplay().equals(typeFilter))
+                .map(this::toDTO)
+                .toList();
+    }
+
+    public List<String> getMeldingTypes() {
+        return Arrays.stream(MeldingType.values())
+                .map(MeldingType::getDisplay)
+                .toList();
     }
 
     public void markeerAlsGelezen(long id) {

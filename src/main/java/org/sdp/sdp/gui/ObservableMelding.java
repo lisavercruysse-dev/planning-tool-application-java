@@ -1,44 +1,39 @@
 package org.sdp.sdp.gui;
 
-import domein.Melding;
-import domein.MeldingType;
+import dto.MeldingDTO;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-import java.time.LocalTime;
+import java.time.LocalDate;
 
 public class ObservableMelding {
 
-    private final Melding melding;
+    private final MeldingDTO dto;
     private final BooleanProperty gelezen;
 
-    public ObservableMelding(Melding melding) {
-        this.melding = melding;
-        this.gelezen = new SimpleBooleanProperty(melding.isGelezen());
+    public ObservableMelding(MeldingDTO dto) {
+        this.dto = dto;
+        this.gelezen = new SimpleBooleanProperty(dto.gelezen());
     }
 
     public long getId() {
-        return melding.getId();
+        return dto.id();
     }
 
-    public MeldingType getType() {
-        return melding.getType();
+    public String getType() {
+        return dto.type();
     }
 
     public String getTitel() {
-        return melding.getTitel();
+        return dto.titel();
     }
 
     public String getDetail() {
-        return melding.getDetail();
+        return dto.detail();
     }
 
-    public LocalTime getBeginTijd() {
-        return melding.getBeginTijd();
-    }
-
-    public LocalTime getEindTijd() {
-        return melding.getEindTijd();
+    public LocalDate getDatum() {
+        return dto.datum();
     }
 
     public BooleanProperty gelezenProperty() {
@@ -47,10 +42,5 @@ public class ObservableMelding {
 
     public boolean isGelezen() {
         return gelezen.get();
-    }
-
-    public void setGelezen(boolean value) {
-        melding.setGelezen(value);
-        gelezen.set(value);
     }
 }
