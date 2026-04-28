@@ -14,7 +14,7 @@
                   <StackPane style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                               <!-- Tabel -->
-                              <TableView fx:id="tblWerknemers" prefHeight="400.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                              <TableView fx:id="tblWerknemers" styleClass="table" prefHeight="400.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                                  <columns>
                                     <TableColumn fx:id="lastNameCol" text="Achternaam" />
                                     <TableColumn fx:id="firstNameCol" text="Voornaam" />
