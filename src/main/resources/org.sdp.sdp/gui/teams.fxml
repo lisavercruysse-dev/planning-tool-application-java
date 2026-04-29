@@ -8,31 +8,61 @@
     <children>
         <StackPane stylesheets="@../../styles/styles.css" VBox.vgrow="ALWAYS">
             <children>
-                <VBox alignment="TOP_CENTER" spacing="10.0">
-                    <children>
-                        <TableView fx:id="teamsTbl" styleClass="table" VBox.vgrow="ALWAYS">
-                            <columns>
-                                <TableColumn fx:id="naamCol" minWidth="100.0" prefWidth="150.0" text="naam" />
-                                <TableColumn fx:id="verantwoordelijkeCol" minWidth="150.0" prefWidth="200.0" text="verantwoordelijke" />
-                                <TableColumn fx:id="aantalLedenCol" minWidth="100.0" prefWidth="150.0" text="aantal leden" />
-                                <TableColumn fx:id="siteCol" minWidth="100.0" prefWidth="100.0" text="site" />
-                            </columns>
-                            <VBox.margin>
-                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                            </VBox.margin>
-                        </TableView>
-                        <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-                            <children>
-                                <Button fx:id="detailsButton" mnemonicParsing="false" onAction="#onDetailsAction" styleClass="cancelButton" text="Details" />
-                                <Button mnemonicParsing="false" onAction="#onVerwijderenAction" styleClass="cancelButton" text="Verwijderen" />
-                                <Button alignment="CENTER" mnemonicParsing="false" onAction="#toevoegenAction" styleClass="confirmButton" text="Toevoegen" />
-                            </children>
-                            <padding>
-                                <Insets top="10.0" />
-                            </padding>
-                        </HBox>
-                    </children>
-                </VBox>
+            <HBox>
+               <children>
+                      <VBox alignment="TOP_CENTER" spacing="10.0" HBox.hgrow="ALWAYS">
+                          <children>
+                              <TableView fx:id="teamsTbl" prefHeight="200.0" prefWidth="400.0" styleClass="table" VBox.vgrow="ALWAYS">
+                                  <columns>
+                                      <TableColumn fx:id="naamCol" minWidth="100.0" prefWidth="150" text="naam" />
+                                      <TableColumn fx:id="verantwoordelijkeCol" prefWidth="150" text="verantwoordelijke" />
+                                      <TableColumn fx:id="aantalLedenCol" prefWidth="150" text="aantal leden" />
+                                      <TableColumn fx:id="siteCol" prefWidth="150" text="site" />
+                                  </columns>
+                                  <VBox.margin>
+                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                  </VBox.margin>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                              </TableView>
+                          </children>
+                      </VBox>
+                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="300.0" spacing="20.0" styleClass="rightPanelForm">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <children>
+                        <VBox>
+                           <children>
+                              <Label styleClass="h2" text="Team Toevoegen" />
+                              <Label text="Velden met een * zijn verplicht." />
+                           </children>
+                        </VBox>
+                        <VBox spacing="5.0">
+                           <children>
+                              <Label text="Naam *" />
+                              <TextField fx:id="naamInput" promptText="naam" styleClass="inputField" />
+                              <Label fx:id="naamError" styleClass="error" />
+                           </children></VBox>
+                        <VBox spacing="5.0">
+                           <children>
+                              <Label text="Site *" />
+                              <ComboBox fx:id="siteInput" prefHeight="27.0" prefWidth="278.0" styleClass="inputField" />
+                              <Label fx:id="siteError" styleClass="error" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label text="Verantwoordelijke *" />
+                              <ComboBox fx:id="verantwoordelijkeInput" prefHeight="27.0" prefWidth="278.0" styleClass="inputField" />
+                              <Label fx:id="verantwoordelijkeError" styleClass="error" />
+                           </children>
+                        </VBox>
+                        <Button mnemonicParsing="false" onAction="#toevoegenAction" style="-fx-font-weight: bold;" styleClass="confirmButton" text="Toevoegen" />
+                     </children></VBox>
+               </children>
+            </HBox>
             </children>
         </StackPane>
     </children>

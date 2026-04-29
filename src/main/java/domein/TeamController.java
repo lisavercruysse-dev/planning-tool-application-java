@@ -1,7 +1,10 @@
 package domein;
 
 import dto.TeamDTO;
+import dto.TeamInputDTO;
+import repository.GebruikerDaoJpa;
 import repository.GenericDaoJpa;
+import repository.SiteDaoJpa;
 import repository.TeamDaoJpa;
 
 import java.util.List;
@@ -11,11 +14,16 @@ public class TeamController {
     private final TeamManager teamManager;
 
     public TeamController() {
-        this.teamManager = new TeamManager(new TeamDaoJpa());
+        this.teamManager = new TeamManager(
+                new TeamDaoJpa(),
+                new GebruikerDaoJpa(),
+                new SiteDaoJpa()
+
+        );
     }
 
-    public TeamDTO addTeam(Werknemer verantwoordelijke, String naam, Site site) {
-        Team team = teamManager.addTeam(verantwoordelijke, naam, site);
+    public TeamDTO addTeam(TeamInputDTO dto) {
+        Team team = teamManager.addTeam(dto);
         return new TeamDTO(team.getId(), team.getNaam());    }
 
     public List<TeamDTO> getAllTeams(){

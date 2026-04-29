@@ -1,5 +1,6 @@
 package domein;
 
+import dto.WerknemerDTO;
 import dto.WerknemerInputDTO;
 import exception.WerknemerInformationException;
 import repository.GebruikerDao;
@@ -48,6 +49,10 @@ public class WerknemerManager {
 
     public Werknemer getVerantwoordelijkeVanTeam(int teamId) {
         return werknemerRepo.getVerantwoordelijkeVoorTeam(teamId);
+    }
+
+    public List<Werknemer> getVerantwoordelijkenVanSite (int siteId) {
+        return werknemerRepo.getVerantwoordelijkenVanSite(siteId);
     }
 
     public void wijzigWerknemer(Werknemer werknemer, String nieuweNaam, String nieuweJobtitel) {
@@ -130,4 +135,7 @@ public class WerknemerManager {
         }
     }
 
+    public List<Werknemer> getVerantwoordelijkenZonderSite() {
+        return werknemerRepo.getVerantwoordelijkenZonderSite();
+    }
 }

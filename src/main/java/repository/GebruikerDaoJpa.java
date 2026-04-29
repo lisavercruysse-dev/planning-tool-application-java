@@ -1,5 +1,6 @@
 package repository;
 
+import domein.JobTitel;
 import domein.Team;
 import domein.Werknemer;
 
@@ -50,6 +51,26 @@ public class GebruikerDaoJpa extends GenericDaoJpa<Werknemer> implements Gebruik
     public Werknemer getVerantwoordelijkeVoorTeam(int teamId) {
         Team team = em.find(Team.class, teamId);
         return team != null ? team.getVerantwoordelijke() : null;
+    }
+
+    @Override
+    public List<Werknemer> getVerantwoordelijkenVanSite(int siteId) {
+        return em.createQuery(
+                "SELECT w FROM Werknemer w WHERE w.jobTitel = :jobtitel AND EXISTS (SELECT t FROM Team t WHERE t.verantwoordelijke = w AND t.site.id = :siteId)",
+                Werknemer.class
+        ).setParameter("jobtitel", JobTitel.VERANTWOORDELIJKE)
+                .setParameter("siteId", siteId).getResultList();
+    }
+
+    @Override
+    public List<Werknemer> getVerantwoordelijkenZonderSite() {
+        return em.createQuery(
+                        "SELECT w FROM Werknemer w " +
+                                "WHERE w.jobTitel = :jobtitel " +
+                                "AND NOT EXISTS (SELECT t FROM Team t WHERE t.verantwoordelijke = w)",
+                        Werknemer.class)
+                .setParameter("jobtitel", JobTitel.VERANTWOORDELIJKE)
+                .getResultList();
     }
 
 }
