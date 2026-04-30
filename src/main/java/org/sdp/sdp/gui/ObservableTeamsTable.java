@@ -1,7 +1,12 @@
 package org.sdp.sdp.gui;
 
-import domein.*;
+import domein.SiteController;
+import domein.TeamController;
+import domein.WerknemerController;
+import dto.SiteDTO;
 import dto.TeamDTO;
+import dto.TeamInputDTO;
+import dto.WerknemerDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -40,8 +45,8 @@ public class ObservableTeamsTable {
         });
     }
 
-    public ObservableTeam addTeam(Werknemer verantwoordelijke, String naam, Site site) {
-        TeamDTO t = teamController.addTeam(verantwoordelijke, naam, site);
+    public ObservableTeam addTeam(TeamInputDTO dto) {
+        TeamDTO t = teamController.addTeam(dto);
         ObservableTeam ot = new ObservableTeam(t, werknemerController, siteController);
         observableTeamList.add(ot);
         return ot;

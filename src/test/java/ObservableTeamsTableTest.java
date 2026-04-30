@@ -1,6 +1,7 @@
 import domein.*;
 import dto.SiteDTO;
 import dto.TeamDTO;
+import dto.TeamInputDTO;
 import dto.WerknemerDTO;
 import exception.WerknemerInformationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -81,12 +82,15 @@ public class ObservableTeamsTableTest {
         TeamDTO t3DTO = new TeamDTO(t3.getId(), t3.getNaam());
 
         Mockito.when(teamController.addTeam(
-                Mockito.any(),
-                Mockito.anyString(),
                 Mockito.any()
         )).thenReturn(t3DTO);
 
-        observableTeamsTable.addTeam(VERANTWOORDELIJKE, "Team C", SITE);
+        TeamInputDTO dto = new TeamInputDTO("Team C",
+                new SiteDTO(SITE.getId(), SITE.getName(),SITE.getLocatie(), SITE.getCapaciteit(),
+                        SITE.getOperationeleStatus().toString(), SITE.getProductieStatus().toString()),
+                werknemerController.toDTO(VERANTWOORDELIJKE));
+
+        observableTeamsTable.addTeam(dto);
 
         assertEquals(3, observableTeamsTable.getFilteredTeams().size());
     }

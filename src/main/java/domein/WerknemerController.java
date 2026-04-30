@@ -15,7 +15,7 @@ public class WerknemerController {
         this.werknemerManager = new WerknemerManager(new GebruikerDaoJpa());
     }
 
-    private WerknemerDTO toDTO(Werknemer w) {
+    public WerknemerDTO toDTO(Werknemer w) {
         return new WerknemerDTO(w.getId(), w.getVoornaam(), w.getAchternaam(), w.getJobTitel().name(),
                 w.getTelefoon(), w.getGeboortedatum(), w.getLand(), w.getPostcode(), w.getStad(),
                 w.getStraat(), w.getHuisnummer(), w.getBus(), w.getEmail(), w.getStatus());
@@ -36,6 +36,11 @@ public class WerknemerController {
         return toDTO(w);
     }
 
+    public List<WerknemerDTO> getVerantwoordelijkenVanSite(int siteId) {
+        List<Werknemer> werknemers = werknemerManager.getVerantwoordelijkenVanSite(siteId);
+        return werknemers.stream().map(this::toDTO).toList();
+    }
+
     public List<WerknemerDTO> getGewoneWerknemers() {
         List<Werknemer> werknemers = werknemerManager.getGewoneWerknemers();
         return werknemers.stream().map(this::toDTO).toList();
@@ -54,8 +59,8 @@ public class WerknemerController {
         werknemerManager.verwijderWerknemer(werknemer);
     }
 
-    public List<Werknemer> getVerantwoordelijken() {
-        return werknemerManager.getVerantwoordelijken();
+    public List<WerknemerDTO> getVerantwoordelijken() {
+        return werknemerManager.getVerantwoordelijken().stream().map(this::toDTO).toList();
     }
 
     public Werknemer voegWerknemerToeAanTeam(int werknemerId, int teamId) {
@@ -64,6 +69,11 @@ public class WerknemerController {
 
     public void verwijderWerknemerUitTeam(int werknemerId, int teamId) {
         werknemerManager.verwijderWerknemerUitTeam(werknemerId, teamId);
+    }
+
+    public List<WerknemerDTO> getVerantwoordelijkenZonderSite() {
+        List<Werknemer> werknemers = werknemerManager.getVerantwoordelijkenZonderSite();
+        return werknemers.stream().map(this::toDTO).toList();
     }
 
 }

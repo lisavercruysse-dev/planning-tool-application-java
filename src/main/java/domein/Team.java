@@ -1,14 +1,13 @@
 package domein;
 
+import exception.TeamInformationException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import util.TeamElement;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name="teams")
@@ -38,23 +37,24 @@ public class Team {
     private Site site;
 
     public Team(Werknemer verantwoordelijke, String naam, Site site) {
-        this.verantwoordelijke = verantwoordelijke;
-        this.site = site;
-        this.naam = naam;
-    }
-
-    public static Set<String> validate(Werknemer verantwoordelijke, String naam, Site site) {
-        Set<String> errors = new HashSet<>();
+        Map<TeamElement, String> errors = new HashMap<>();
 
         if (verantwoordelijke == null) {
-            errors.add("Verantwoordelijke moet ingevuld zijn");
-        }
-        if (naam == null || naam.isBlank() || naam.trim().length() < 2) {
-            errors.add("Naam moet minstens 2 karakters zijn");
-        }
+            errors.put(TeamElement.VERANTWOORDELIJKE, "Verantwoordelijke is verplicht");
+        } else this.verantwoordelijke = verantwoordelijke;
         if (site == null) {
-            errors.add("Site moet ingevuld zijn");
+            errors.put(TeamElement.SITE, "Site is verplicht");
+        }else this.site = site;
+        if (naam == null || naam.isBlank()) {
+            errors.put(TeamElement.NAAM, "Naam is verplicht");
         }
-        return errors;
+        else if (naam.trim().length() < 2){
+            errors.put(TeamElement.NAAM, "Naam moet minstens 2 karakters zijn");
+        } else this.naam = naam;
+
+        if (!errors.isEmpty()) {
+            throw new TeamInformationException(errors);
+        }
     }
+
 }

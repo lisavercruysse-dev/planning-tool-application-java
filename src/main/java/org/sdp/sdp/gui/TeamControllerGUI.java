@@ -1,25 +1,34 @@
 package org.sdp.sdp.gui;
 
 import domein.SiteController;
+import domein.Werknemer;
 import domein.WerknemerController;
+import dto.SiteDTO;
+import dto.TeamDTO;
+import dto.TeamInputDTO;
+import dto.WerknemerDTO;
+import exception.TeamInformationException;
+import exception.WerknemerInformationException;
 import javafx.beans.binding.Bindings;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import domein.TeamController;
+import javafx.util.StringConverter;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TeamControllerGUI extends VBox {
     private final MainController mainController;
     private final ObservableTeamsTable observableTeamsTable;
+    private final SiteController siteController;
+    private final WerknemerController werknemerController;
 
     @FXML
     private TableColumn<ObservableTeam, String> naamCol;
@@ -36,8 +45,22 @@ public class TeamControllerGUI extends VBox {
     @FXML
     private TableView<ObservableTeam> teamsTbl;
 
+    @FXML
+    private TextField naamInput;
+
+    @FXML
+    private Label  naamError, verantwoordelijkeError, siteError;
+
+    @FXML
+    private ComboBox<SiteDTO> siteInput;
+
+    @FXML
+    private ComboBox<WerknemerDTO> verantwoordelijkeInput;
+
     public TeamControllerGUI(MainController mainController, TeamController teamController, WerknemerController werknemerController, SiteController siteController) {
         this.mainController = mainController;
+        this.werknemerController = werknemerController;
+        this.siteController = siteController;
         this.observableTeamsTable = new ObservableTeamsTable(teamController, werknemerController, siteController);
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/org.sdp.sdp/gui/teams.fxml"));
@@ -50,10 +73,10 @@ public class TeamControllerGUI extends VBox {
             throw new RuntimeException(e);
         }
 
-        initializeTable();
+        initialize();
     }
 
-    private void initializeTable() {
+    private void initialize() {
         Label placeholder = new Label("Geen teams gevonden");
         placeholder.setStyle("-fx-text-fill: #999999; -fx-font-size: 13;");
         teamsTbl.setPlaceholder(placeholder);
@@ -85,20 +108,70 @@ public class TeamControllerGUI extends VBox {
                         System.out.printf("%d %s", index, newValue.naamProperty());
                     }
                 });
+
+        List<SiteDTO> sites = siteController.getAllSites();
+
+        siteInput.getItems().addAll(sites);
+        siteInput.setConverter(new StringConverter<SiteDTO>() {
+            @Override
+            public String toString(SiteDTO s) {
+                return s == null ? "" : s.name();
+            }
+
+            @Override
+            public SiteDTO fromString(String s) {
+                return null;
+            }
+        });
+
+        siteInput.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+            verantwoordelijkeInput.getItems().clear();
+            if (newValue != null) {
+                List<WerknemerDTO> filteredVerantwoordelijken = new ArrayList<>();
+                filteredVerantwoordelijken.addAll(werknemerController.getVerantwoordelijkenVanSite(newValue.id()));
+                filteredVerantwoordelijken.addAll(werknemerController.getVerantwoordelijkenZonderSite());
+                verantwoordelijkeInput.getItems().addAll(filteredVerantwoordelijken);
+                }
+            verantwoordelijkeInput.getSelectionModel().selectFirst();
+        });
+        verantwoordelijkeInput.setConverter(new StringConverter<WerknemerDTO>() {
+            @Override
+            public String toString(WerknemerDTO w) {
+                return w == null ? "" : w.voornaam() + " " + w.achternaam();
+            }
+
+            @Override
+            public WerknemerDTO fromString(String s) {
+                return null;
+            }
+        });
+        siteInput.getSelectionModel().selectFirst();
     }
 
     public void toevoegenAction(ActionEvent actionEvent) {
+        naamError.setText("");
+
+        String naam =  naamInput.getText();
+        SiteDTO site = siteInput.getSelectionModel().getSelectedItem();
+        WerknemerDTO verantwoordelijke = verantwoordelijkeInput.getSelectionModel().getSelectedItem();
+
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org.sdp.sdp/gui/teamToevoegen.fxml"));
-            TeamToevoegenController controller = new TeamToevoegenController(mainController, observableTeamsTable);
-
-            loader.setController(controller);
-
-            Node popup = loader.load();
-            mainController.showPopup(popup);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            observableTeamsTable.addTeam(new TeamInputDTO(naam, site, verantwoordelijke));
+        } catch (IllegalArgumentException e) {
+            naamError.setText(e.getMessage());
+        } catch (TeamInformationException ex) {
+            handleErrors(ex);
         }
+    }
+
+    private void handleErrors (TeamInformationException ex) {
+        ex.getErrors().forEach((el, message) -> {
+            switch (el) {
+                case NAAM -> naamError.setText(message);
+                case VERANTWOORDELIJKE -> verantwoordelijkeError.setText(message);
+                case SITE -> siteError.setText(message);
+            }
+        });
     }
 
     public void onDetailsAction(ActionEvent actionEvent) {

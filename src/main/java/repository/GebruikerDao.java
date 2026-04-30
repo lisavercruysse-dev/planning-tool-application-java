@@ -11,4 +11,6 @@ public interface GebruikerDao extends GenericDao<Werknemer>{
     public Werknemer voegWerknemerToeAanTeam(int werknemerId, int teamId);
     public List<Werknemer> getGewoneWerknemers();
     public Werknemer getVerantwoordelijkeVoorTeam(int teamId);
+    public List<Werknemer> getVerantwoordelijkenVanSite(int siteId);
+    public List<Werknemer> getVerantwoordelijkenZonderSite();
 }

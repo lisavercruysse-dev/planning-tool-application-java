@@ -1,5 +1,7 @@
 import domein.*;
+import dto.SiteDTO;
 import dto.TeamDTO;
+import dto.TeamInputDTO;
 import exception.WerknemerInformationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import repository.GebruikerDao;
 import repository.GenericDao;
+import repository.SiteDao;
 import repository.TeamDao;
 
 import java.time.LocalDate;
@@ -31,15 +35,21 @@ public class TeamTest {
     @Mock
     private TeamDao teamRepository;
 
+    @Mock
+    private GebruikerDao werknemerRepository;
+
+    @Mock
+    private SiteDao siteRepository;
+
     @InjectMocks
     private TeamManager teamManager;
+    private final WerknemerController werknemerController = new WerknemerController();
 
     private static Werknemer VERANTWOORDELIJKE;
-    private static LocalDate GEBOORTEDATUM = LocalDate.of(2000, 1, 1);
+    private static final LocalDate GEBOORTEDATUM = LocalDate.of(2000, 1, 1);
     private static final Site SITE = new Site("Site noord", "Gent", 100, OperationeleStatus.ACTIEF, ProductieStatus.GEZOND);
 
-    @BeforeEach
-    public void setUp() throws WerknemerInformationException {
+    private static Stream<Arguments> correcteWaardenToevoegenTeam() throws WerknemerInformationException {
         VERANTWOORDELIJKE = Werknemer.builder()
                 .voornaam("Bart")
                 .achternaam("De Smedt")
@@ -51,16 +61,26 @@ public class TeamTest {
                 .straat("Vlaanderenstraat")
                 .huisnummer(12)
                 .build();
-    }
 
-    private static Stream<Arguments> correcteWaardenToevoegenTeam() {
         return Stream.of(
                 Arguments.of(VERANTWOORDELIJKE, "Team A", SITE),
                 Arguments.of(VERANTWOORDELIJKE, "B1", SITE)
         );
     }
 
-    private static Stream<Arguments> fouteWaardenToevoegenTeam() {
+    private static Stream<Arguments> fouteWaardenToevoegenTeam() throws WerknemerInformationException {
+        VERANTWOORDELIJKE = Werknemer.builder()
+                .voornaam("Bart")
+                .achternaam("De Smedt")
+                .jobTitel(JobTitel.VERANTWOORDELIJKE)
+                .geboortedatum(GEBOORTEDATUM)
+                .land("België")
+                .postcode("9000")
+                .stad("Gent")
+                .straat("Vlaanderenstraat")
+                .huisnummer(12)
+                .build();
+
         return Stream.of(
                 Arguments.of(null, "Team A", SITE),
                 Arguments.of(null, "Team A", null),
@@ -71,7 +91,19 @@ public class TeamTest {
         );
     }
 
-    private static Stream<Arguments> bestaandTeamWaarden() {
+    private static Stream<Arguments> bestaandTeamWaarden() throws WerknemerInformationException {
+        VERANTWOORDELIJKE = Werknemer.builder()
+                .voornaam("Bart")
+                .achternaam("De Smedt")
+                .jobTitel(JobTitel.VERANTWOORDELIJKE)
+                .geboortedatum(GEBOORTEDATUM)
+                .land("België")
+                .postcode("9000")
+                .stad("Gent")
+                .straat("Vlaanderenstraat")
+                .huisnummer(12)
+                .build();
+
         return Stream.of(
                 Arguments.of(VERANTWOORDELIJKE, "Team A", SITE),
                 Arguments.of(VERANTWOORDELIJKE, "team a", SITE)
@@ -81,41 +113,45 @@ public class TeamTest {
     @ParameterizedTest
     @MethodSource("correcteWaardenToevoegenTeam")
     public void addTeamTest(Werknemer verantwoordelijke, String naam, Site site) {
+        Mockito.when(werknemerRepository.get(verantwoordelijke.getId()))
+                .thenReturn(verantwoordelijke);
+
+        Mockito.when(siteRepository.get(site.getId()))
+                .thenReturn(site);
+
+        TeamInputDTO dto = new TeamInputDTO(naam, new SiteDTO(site.getId(), site.getName(), site.getLocatie(), site.getCapaciteit(),
+                site.getProductieStatus().toString(), site.getOperationeleStatus().toString()), werknemerController.toDTO(verantwoordelijke));
         Mockito.when(teamRepository.findAll()).thenReturn(Collections.emptyList());
-        Team team = teamManager.addTeam(verantwoordelijke, naam, site);
+        Team team = teamManager.addTeam(dto);
 
         verify(teamRepository).startTransaction();
         verify(teamRepository).insert(team);
         verify(teamRepository).commitTransaction();
 
-        assertEquals(verantwoordelijke, team.getVerantwoordelijke());
+        assertEquals(verantwoordelijke.getId(), team.getVerantwoordelijke().getId());
         assertEquals(SITE, team.getSite());
-    }
-
-    @ParameterizedTest
-    @MethodSource("fouteWaardenToevoegenTeam")
-    public void addTeamNullVerantwoordelijkeTest(Werknemer verantwoordelijke, String naam, Site site) {
-        assertThrows(IllegalArgumentException.class, () -> {
-            teamManager.addTeam(verantwoordelijke, naam, site);
-        });
     }
 
     @ParameterizedTest
     @MethodSource("bestaandTeamWaarden")
     public void addTeamBestaatAlTest(Werknemer verantwoordelijke, String naam, Site site) {
+        TeamInputDTO dto = new TeamInputDTO(naam, new SiteDTO(site.getId(), site.getName(), site.getLocatie(), site.getCapaciteit(),
+                site.getProductieStatus().toString(), site.getOperationeleStatus().toString()), werknemerController.toDTO(verantwoordelijke));
         Team bestaandTeam = new Team(VERANTWOORDELIJKE, "Team A", site);
         Mockito.lenient().when(teamRepository.findAll()).thenReturn(List.of(bestaandTeam));
 
         assertThrows(IllegalArgumentException.class, () -> {
-            teamManager.addTeam(verantwoordelijke, naam, site);
+            teamManager.addTeam(dto);
         });
     }
 
     @Test
     public void addTeamRollbackBijFoutTest() {
+        TeamInputDTO dto = new TeamInputDTO("Site A", new SiteDTO(SITE.getId(), SITE.getName(), SITE.getLocatie(), SITE.getCapaciteit(),
+                SITE.getProductieStatus().toString(), SITE.getOperationeleStatus().toString()), werknemerController.toDTO(VERANTWOORDELIJKE));
         Mockito.when(teamRepository.findAll()).thenReturn(Collections.emptyList());
         doThrow(new RuntimeException()).when(teamRepository).insert(any());
-        assertThrows(RuntimeException.class, () -> teamManager.addTeam(VERANTWOORDELIJKE, "Site A", SITE));
+        assertThrows(RuntimeException.class, () -> teamManager.addTeam(dto));
         verify(teamRepository).rollbackTransaction();
     }
 

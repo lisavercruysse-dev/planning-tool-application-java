@@ -1,7 +1,10 @@
 package domein;
 
 import dto.TeamDTO;
+import dto.TeamInputDTO;
+import repository.GebruikerDao;
 import repository.GenericDao;
+import repository.SiteDao;
 import repository.TeamDao;
 
 import java.util.List;
@@ -10,23 +13,27 @@ import java.util.Set;
 public class TeamManager {
 
     private final TeamDao teamRepository;
+    private final GebruikerDao werknemerRepository;
+    private final SiteDao siteRepository;
 
-    public TeamManager(TeamDao teamRepository) {this.teamRepository = teamRepository;}
+    public TeamManager(TeamDao teamRepository, GebruikerDao werknemerRepository, SiteDao siteRepository) {
+        this.teamRepository = teamRepository;
+        this.werknemerRepository = werknemerRepository;
+        this.siteRepository = siteRepository;
+    }
 
-    public Team addTeam(Werknemer verantwoordelijke, String naam, Site site) {
-        Set<String> errors = Team.validate(verantwoordelijke, naam, site);
-        if (!errors.isEmpty()) {
-            throw new IllegalArgumentException(String.join("\n", errors));
-        }
-
+    public Team addTeam(TeamInputDTO dto) {
         boolean bestaatAl = getAllTeams().stream()
-                .anyMatch(t -> t.getNaam().trim().equalsIgnoreCase(naam.trim())
-                        && t.getSite().equals(site));
+                .anyMatch(t -> t.getNaam().trim().equalsIgnoreCase(dto.name().trim())
+                        && t.getSite().getId() == dto.site().id());
         if (bestaatAl) {
             throw new IllegalArgumentException("Een team met deze naam en site bestaat al.");
         }
 
-        Team t = new Team(verantwoordelijke, naam, site);
+        Werknemer verantwoordelijke = werknemerRepository.get(dto.verantwoordelijke().id());
+        Site site = siteRepository.get(dto.site().id());
+
+        Team t = new Team(verantwoordelijke, dto.name(), site);
 
         teamRepository.startTransaction();
         try {

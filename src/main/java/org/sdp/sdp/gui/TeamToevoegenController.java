@@ -1,7 +1,10 @@
 package org.sdp.sdp.gui;
 
-import domein.*;
+import domein.SiteController;
+import domein.WerknemerController;
 import dto.SiteDTO;
+import dto.TeamInputDTO;
+import dto.WerknemerDTO;
 import javafx.util.StringConverter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,7 +26,7 @@ public class TeamToevoegenController extends VBox {
     public TextField naam;
 
     @FXML
-    public ComboBox<Werknemer> verantwoordelijke;
+    public ComboBox<WerknemerDTO> verantwoordelijke;
 
     @FXML ComboBox<SiteDTO> site;
 
@@ -48,14 +51,14 @@ public class TeamToevoegenController extends VBox {
         siteError.setText("");
 
         verantwoordelijke.getItems().addAll(werknemerController.getVerantwoordelijken());
-        verantwoordelijke.setConverter(new StringConverter<Werknemer>() {
+        verantwoordelijke.setConverter(new StringConverter<WerknemerDTO>() {
             @Override
-            public String toString(Werknemer w) {
-                return w == null ? "" : w.getVoornaam() + " " + w.getAchternaam();
+            public String toString(WerknemerDTO w) {
+                return w == null ? "" : w.voornaam() + " " + w.achternaam();
             }
 
             @Override
-            public Werknemer fromString(String s) {return null; }
+            public WerknemerDTO fromString(String s) {return null; }
         });
 
         site.getItems().addAll(siteController.getAllSites());
@@ -85,26 +88,12 @@ public class TeamToevoegenController extends VBox {
         siteError.setText("");
 
         String naam = this.naam.getText();
-        Werknemer verantwoordelijke = this.verantwoordelijke.getSelectionModel().getSelectedItem();
-        SiteDTO siteDTO = this.site.getSelectionModel().getSelectedItem();
-        Site site = siteDTO != null ? siteController.getSiteById(siteDTO.id()) : null;
+        WerknemerDTO verantwoordelijke = this.verantwoordelijke.getSelectionModel().getSelectedItem();
+        SiteDTO site = this.site.getSelectionModel().getSelectedItem();
 
-        Set<String> errors = Team.validate( verantwoordelijke, naam, site);
-
-        Map<Label, String> errorMap = Map.of(
-                naamError, "naam",
-                verantwoordelijkeError, "verantwoordelijke",
-                siteError, "site"
-        );
-
-        errorMap.forEach((label, keyword) -> {
-            label.setText(errors.stream().filter(e -> e.toLowerCase().contains(keyword.toLowerCase())).findFirst().orElse(""));
-        });
-
-        if(!errors.isEmpty()) return;
 
         try {
-            teamsTable.addTeam(verantwoordelijke, naam, site);
+            teamsTable.addTeam(new TeamInputDTO(naam, site, verantwoordelijke));
             mainController.closePopup();
         } catch(IllegalArgumentException e) {
             naamError.setText(e.getMessage());

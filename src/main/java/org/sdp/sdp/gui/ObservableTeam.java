@@ -1,8 +1,6 @@
 package org.sdp.sdp.gui;
 
 import domein.SiteController;
-import domein.Team;
-import domein.TeamController;
 import domein.WerknemerController;
 import dto.SiteDTO;
 import dto.TeamDTO;
