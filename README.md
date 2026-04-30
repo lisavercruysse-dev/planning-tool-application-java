@@ -17,16 +17,20 @@ _New features and improvements still need to be added_
   - Add new employees
   - Soft delete
   - Edit employees
-  - Add to teams 
+  - Add to teams
+    
 * Manage teams
   - Add new teams
   - Edit teams
-  - Delete teams 
+  - Delete teams
+    
 * Manage plants
   - Add new plants
-  - Edit plants 
+  - Edit plants
+    
 * Manage machines
   - Add new machines
   -  Edit machines
   -  Delete machines
+    
 *   notifications
